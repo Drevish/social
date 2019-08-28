@@ -1,0 +1,38 @@
+header {
+  position: fixed;
+  top: 0;
+  height: 50px;
+  width: 100%;
+  background-color: #486ae3; }
+  header .container {
+    color: #ffffff;
+    height: 100%; }
+    header .container .row {
+      height: 100%; }
+  header .logo {
+    font-size: 24px; }
+    header .logo a {
+      color: #ffffff; }
+      header .logo a:hover {
+        color: #ffffff;
+        text-decoration: none; }
+
+main {
+  margin-top: 50px;
+  padding-top: 10px; }
+
+.centered-form {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  max-width: 250px; }
+
+.form-group {
+  margin-bottom: 0; }
+
+/*# sourceMappingURL=style.css.map */

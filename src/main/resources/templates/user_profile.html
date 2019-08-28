@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:if="${user != null}" th:text="${user.name + ' ' + user.surname}"></title>
+    <title th:if="${user == null}">Not found</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <div class="row d-flex align-items-center">
+            <div class="col-3">
+                <div class="logo">
+                    <a th:href="@{/profile}">Social</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+        <div class="row">
+            <div class="col-3">
+                <div class="side-menu">
+                    <div class="list-group">
+                        <a th:href="@{/profile}" class="list-group-item list-group-item-action">
+                            Profile
+                        </a>
+                        <a th:href="@{/news}" class="list-group-item list-group-item-action disabled">
+                            News
+                        </a>
+                        <a th:href="@{/messages}" class="list-group-item list-group-item-action disabled">
+                            Messages
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-9">
+                <div class="content">
+                    <div th:if="${user == null}">
+                        <h3>No such user exists</h3>
+                    </div>
+
+                    <div th:if="${user != null}">
+                        <h3>This is the page of <span th:text="${user.name}"></span> <span
+                                th:text="${user.surname}"></span>!</h3>
+                    </div>
+
+                    <a th:href="@{/profile}">Back to own profile</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>
