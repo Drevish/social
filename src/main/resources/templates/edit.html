@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Profile</title>
+    <title>Edit profile</title>
     <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
@@ -40,10 +40,23 @@
             </div>
             <div class="col-9">
                 <div class="content">
-                    <h1>Hello, <span th:text="${user.name}"></span> <span th:text="${user.surname}"></span>!</h1>
-                    <p>Your email: <span th:text="${user.email}"></span></p>
-                    <a th:href="@{/edit}">Edit profile</a><br/>
-                    <a th:href="@{/logout}">Log out</a>
+                    <div th:if="${error != null}" class="text-danger" th:text="${error}"></div>
+                    <div th:if="${param.success != null}" class="text-success">Successfully updated</div>
+                    <form th:action="@{/edit}" method="post" th:object="${user}">
+                        <div class="form-group">
+                            <label for="name">Your name: </label>
+                            <input class="form-control" type="text" id="name" name="name" th:value="*{name}">
+                            <br/>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="surname">Your surname: </label>
+                            <input class="form-control" type="text" id="surname" name="surname" th:value="*{surname}">
+                            <br/>
+                        </div>
+
+                        <input type="submit" value="Save" class="btn btn-block btn-success">
+                    </form>
                 </div>
             </div>
         </div>

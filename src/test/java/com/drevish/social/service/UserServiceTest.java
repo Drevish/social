@@ -2,6 +2,7 @@ package com.drevish.social.service;
 
 import com.drevish.social.exception.UserExistsException;
 import com.drevish.social.exception.UserNotFoundException;
+import com.drevish.social.exception.UserValidationException;
 import com.drevish.social.model.entity.User;
 import com.drevish.social.model.repository.UserRepository;
 import com.drevish.social.service.impl.UserServiceImpl;
@@ -30,10 +31,14 @@ public class UserServiceTest {
   @Autowired
   private UserService service;
 
+  private User validUser = null;
+
   @Before
   public void before() {
     when(repository.findByEmail("email")).thenReturn(Optional.of(new User()));
     when(repository.findById(0L)).thenReturn(Optional.of(new User()));
+
+    validUser = new User(1L, "name", "surname", "email@email.com", "password", null);
   }
 
   @Test
@@ -71,6 +76,26 @@ public class UserServiceTest {
     user.setEmail("email");
     user.setPassword("new");
     service.register(user);
+  }
+
+  @Test(expected = UserValidationException.class)
+  public void shouldThrowValidationExceptionOnTooShortName() {
+    User user = new User();
+    user.setName("a");
+    service.updateInfo(user);
+  }
+
+  @Test(expected = UserValidationException.class)
+  public void shouldThrowValidationExceptionOnTooShortSurname() {
+    User user = new User();
+    user.setSurname("a");
+    service.updateInfo(user);
+  }
+
+  @Test
+  public void shouldUpdateUserInfo() {
+    service.updateInfo(validUser);
+    verify(repository, times(1)).save(validUser);
   }
 
   @TestConfiguration
