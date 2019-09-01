@@ -4,6 +4,7 @@ import com.drevish.social.exception.UserExistsException;
 import com.drevish.social.exception.UserNotFoundException;
 import com.drevish.social.model.entity.User;
 import com.drevish.social.model.repository.UserRepository;
+import com.drevish.social.service.impl.UserServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -76,7 +77,7 @@ public class UserServiceTest {
   static class UserServiceTestContextConfiguration {
     @Bean
     public UserService userService() {
-      return new UserService();
+      return new UserServiceImpl();
     }
   }
 }
