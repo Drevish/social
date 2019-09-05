@@ -3,40 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Profile</title>
+
     <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
 
-<header>
-    <div class="container">
-        <div class="row d-flex align-items-center">
-            <div class="col-3">
-                <div class="logo">
-                    <a th:href="@{/profile}">Social</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</header>
+<div class="header" th:replace="/fragments/header :: header"></div>
 
 <main>
     <div class="container">
         <div class="row">
-            <div class="col-3">
-                <div class="side-menu">
-                    <div class="list-group">
-                        <a th:href="@{/profile}" class="list-group-item list-group-item-action active">
-                            Profile
-                        </a>
-                        <a th:href="@{/news}" class="list-group-item list-group-item-action disabled">
-                            News
-                        </a>
-                        <a th:href="@{/messages}" class="list-group-item list-group-item-action disabled">
-                            Messages
-                        </a>
-                    </div>
-                </div>
+            <div class="col-3" th:insert="/fragments/side-menu :: side-menu">
             </div>
             <div class="col-9">
                 <div class="content">
@@ -49,6 +27,10 @@
         </div>
     </div>
 </main>
+
+<script th:src="@{/js/jquery-3.4.1.min.js}"></script>
+<script th:src="@{/js/popper.min.js}"></script>
+<script th:src="@{/js/bootstrap.js}"></script>
 
 </body>
 </html>

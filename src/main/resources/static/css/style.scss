@@ -1,7 +1,8 @@
 $header-height: 50px;
 
 header {
-  position: fixed;
+  position: relative;
+  z-index: 100000;
   top: 0;
   height: $header-height;
   width: 100%;
@@ -32,8 +33,7 @@ header {
 
 
 main{
-  margin-top: $header-height;
-  padding-top: 10px;
+  margin-top: 10px;
 }
 
 .centered-form {

@@ -1,5 +1,6 @@
 header {
-  position: fixed;
+  position: relative;
+  z-index: 100000;
   top: 0;
   height: 50px;
   width: 100%;
@@ -18,8 +19,7 @@ header {
         text-decoration: none; }
 
 main {
-  margin-top: 50px;
-  padding-top: 10px; }
+  margin-top: 10px; }
 
 .centered-form {
   position: absolute;

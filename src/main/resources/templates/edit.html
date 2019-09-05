@@ -8,17 +8,7 @@
 </head>
 <body>
 
-<header>
-    <div class="container">
-        <div class="row d-flex align-items-center">
-            <div class="col-3">
-                <div class="logo">
-                    <a th:href="@{/profile}">Social</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</header>
+<div class="header" th:replace="/fragments/header :: header"></div>
 
 <main>
     <div class="container">
@@ -62,6 +52,10 @@
         </div>
     </div>
 </main>
+
+<script th:src="@{/js/jquery-3.4.1.min.js}"></script>
+<script th:src="@{/js/popper.min.js}"></script>
+<script th:src="@{/js/bootstrap.js}"></script>
 
 </body>
 </html>
