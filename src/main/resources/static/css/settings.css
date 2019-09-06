@@ -1,0 +1,21 @@
+.settings-container .settings-row {
+  min-height: 50px;
+  padding-top: 10px;
+  border-bottom: 1px solid gray; }
+  .settings-container .settings-row.active {
+    background-color: #FAFBFC; }
+  .settings-container .settings-row .settings-link {
+    color: #007BFF;
+    text-align: right; }
+    .settings-container .settings-row .settings-link:hover {
+      cursor: pointer;
+      color: #0056B3;
+      text-decoration: underline; }
+  .settings-container .settings-row .settings-form {
+    margin-bottom: 10px; }
+    .settings-container .settings-row .settings-form input {
+      margin-bottom: 10px !important; }
+  .settings-container .settings-row .settings-value .active-value {
+    display: none; }
+
+/*# sourceMappingURL=settings.css.map */

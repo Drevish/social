@@ -32,7 +32,6 @@ public class EditController {
     String email = authentication.getName();
     User currentUser = userService.getUserByEmail(email);
 
-    System.out.println(user);
     currentUser.setName(user.getName());
     currentUser.setSurname(user.getSurname());
 

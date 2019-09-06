@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Edit profile</title>
     <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/core.css}">
 </head>
 <body>
 
@@ -13,23 +13,10 @@
 <main>
     <div class="container">
         <div class="row">
-            <div class="col-3">
-                <div class="side-menu">
-                    <div class="list-group">
-                        <a th:href="@{/profile}" class="list-group-item list-group-item-action active">
-                            Profile
-                        </a>
-                        <a th:href="@{/news}" class="list-group-item list-group-item-action disabled">
-                            News
-                        </a>
-                        <a th:href="@{/messages}" class="list-group-item list-group-item-action disabled">
-                            Messages
-                        </a>
-                    </div>
-                </div>
-            </div>
+            <div class="col-3" th:insert="/fragments/side-menu :: side-menu"></div>
             <div class="col-9">
                 <div class="content">
+                    <h3>Edit profile</h3>
                     <div th:if="${error != null}" class="text-danger" th:text="${error}"></div>
                     <div th:if="${param.success != null}" class="text-success">Successfully updated</div>
                     <form th:action="@{/edit}" method="post" th:object="${user}">

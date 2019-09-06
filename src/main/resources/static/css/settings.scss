@@ -1,0 +1,39 @@
+$link-color: #007BFF;
+$link-hover-color: #0056B3;
+$active-row-background-color: #FAFBFC;
+
+.settings-container {
+  .settings-row {
+    min-height: 50px;
+    padding-top: 10px;
+    border-bottom: 1px solid gray;
+
+    &.active{
+      background-color: $active-row-background-color;
+    }
+
+    .settings-link {
+      color: $link-color;
+      text-align: right;
+
+      &:hover {
+        cursor: pointer;
+        color: $link-hover-color;
+        text-decoration: underline;
+      }
+    }
+
+    .settings-form{
+      input{
+        margin-bottom: 10px !important;
+      }
+      margin-bottom: 10px;
+    }
+
+    .settings-value{
+      .active-value{
+        display: none;
+      }
+    }
+  }
+}

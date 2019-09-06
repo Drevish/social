@@ -5,7 +5,7 @@
     <title>Profile</title>
 
     <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/core.css}">
 </head>
 <body>
 
@@ -21,6 +21,7 @@
                     <h1>Hello, <span th:text="${user.name}"></span> <span th:text="${user.surname}"></span>!</h1>
                     <p>Your email: <span th:text="${user.email}"></span></p>
                     <a th:href="@{/edit}">Edit profile</a><br/>
+                    <a th:href="@{/settings}">Change settings</a><br/>
                     <a th:href="@{/logout}">Log out</a>
                 </div>
             </div>

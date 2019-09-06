@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Change settings</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/core.css}">
+    <link rel="stylesheet" th:href="@{/css/settings.css}">
+</head>
+<body>
+
+<div class="header" th:replace="/fragments/header :: header"></div>
+
+<main>
+    <div class="container">
+        <div class="row">
+            <div class="col-3" th:insert="/fragments/side-menu :: side-menu"></div>
+            <div class="col-9">
+                <div class="content">
+                    <h3>General settings</h3>
+                    <div class="text-danger" th:if="${error != null}" th:text="${error}"></div>
+                    <div class="container-fluid settings-container">
+                        <div class="row settings-row">
+                            <div class="col-3 settings-name">Password</div>
+                            <div class="col-6 settings-value">
+                                <div class="default-value"></div>
+                                <div class="active-value">
+                                    <form th:action="@{/settings}" method="post" class="settings-form">
+                                        <input type="text" name="changed" value="password" hidden>
+                                        <input class="form-control" type="password" name="password"
+                                               placeholder="Current password">
+                                        <input class="form-control" type="password" name="passwordNew"
+                                               placeholder="New password">
+                                        <input class="form-control" type="password" name="passwordNewRepeat"
+                                               placeholder="Repeat new password">
+                                        <button type="submit" class="btn btn-primary">Change</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="col-3 settings-link">Change</div>
+                        </div>
+
+                        <div class="row settings-row">
+                            <div class="col-3 settings-name">Email</div>
+                            <div class="col-6 settings-value">
+                                <div class="default-value" th:text="${user.email}"></div>
+                                <div class="active-value">
+                                    <form th:action="@{/settings}" method="post" class="settings-form">
+                                        <input type="text" name="changed" value="email" hidden>
+                                        <input class="form-control" type="email" name="email" th:value="${user.email}">
+                                        <button type="submit" class="btn btn-primary">Change</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="col-3 settings-link">Change</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script th:src="@{/js/jquery-3.4.1.min.js}"></script>
+<script th:src="@{/js/popper.min.js}"></script>
+<script th:src="@{/js/bootstrap.js}"></script>
+
+<script th:src="@{/js/settings.js}"></script>
+
+</body>
+</html>
