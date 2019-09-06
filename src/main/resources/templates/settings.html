@@ -43,11 +43,11 @@
                         <div class="row settings-row">
                             <div class="col-3 settings-name">Email</div>
                             <div class="col-6 settings-value">
-                                <div class="default-value" th:text="${user.email}"></div>
+                                <div class="default-value" th:text="${session.user.email}"></div>
                                 <div class="active-value">
                                     <form th:action="@{/settings}" method="post" class="settings-form">
                                         <input type="text" name="changed" value="email" hidden>
-                                        <input class="form-control" type="email" name="email" th:value="${user.email}">
+                                        <input class="form-control" type="email" name="email" th:value="${session.user.email}">
                                         <button type="submit" class="btn btn-primary">Change</button>
                                     </form>
                                 </div>

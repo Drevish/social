@@ -19,16 +19,18 @@
                     <h3>Edit profile</h3>
                     <div th:if="${error != null}" class="text-danger" th:text="${error}"></div>
                     <div th:if="${param.success != null}" class="text-success">Successfully updated</div>
-                    <form th:action="@{/edit}" method="post" th:object="${user}">
+                    <form th:action="@{/edit}" method="post" th:object="${userInfo}">
                         <div class="form-group">
                             <label for="name">Your name: </label>
-                            <input class="form-control" type="text" id="name" name="name" th:value="*{name}">
+                            <input class="form-control" type="text" id="name"
+                                   name="name" th:value="${session.user.name}">
                             <br/>
                         </div>
 
                         <div class="form-group">
                             <label for="surname">Your surname: </label>
-                            <input class="form-control" type="text" id="surname" name="surname" th:value="*{surname}">
+                            <input class="form-control" type="text" id="surname"
+                                   name="surname" th:value="${session.user.surname}">
                             <br/>
                         </div>
 

@@ -1,5 +1,6 @@
 package com.drevish.social.service;
 
+import com.drevish.social.controller.dto.UserInfo;
 import com.drevish.social.exception.UserExistsException;
 import com.drevish.social.exception.UserNotFoundException;
 import com.drevish.social.exception.UserValidationException;
@@ -12,5 +13,5 @@ public interface UserService {
 
   void register(User user) throws UserExistsException;
 
-  void updateInfo(User user) throws UserValidationException;
+  void updateInfo(User user, UserInfo info) throws UserValidationException;
 }

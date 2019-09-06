@@ -11,32 +11,38 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpSession;
+
 @Controller
 @RequestMapping("/profile")
 public class ProfileController {
-  @Autowired
-  private UserService userService;
+    @Autowired
+    private UserService userService;
 
-  @GetMapping
-  public String showOwnProfile(Authentication authentication, Model model) {
-    String email = authentication.getName();
-    User user = userService.getUserByEmail(email);
-    model.addAttribute("user", user);
-    return "profile";
-  }
+    @GetMapping
+    public String showOwnProfile(Authentication authentication, Model model, HttpSession session) {
+        //TODO: fix that when we start not from profile page session user is empty
+        if (session.getAttribute("user") == null) {
+            String email = authentication.getName();
+            User user = userService.getUserByEmail(email);
+            session.setAttribute("user", user);
+        }
 
-  @GetMapping("/id{user_id}")
-  public String showUserProfile(@PathVariable Long user_id, Authentication authentication, Model model) {
-    User user = null;
-    try {
-      user = userService.getUserById(user_id);
-      if (user.getEmail().equals(authentication.getName())) {
-        return "redirect:/profile";
-      }
-    } catch (UserNotFoundException ignored) {
+        return "profile";
     }
 
-    model.addAttribute("user", user);
-    return "user_profile";
-  }
+    @GetMapping("/id{userId}")
+    public String showUserProfile(@PathVariable Long userId, Authentication authentication, Model model) {
+        User user = null;
+        try {
+            user = userService.getUserById(userId);
+            if (user.getEmail().equals(authentication.getName())) {
+                return "redirect:/profile";
+            }
+        } catch (UserNotFoundException ignored) {
+        }
+
+        model.addAttribute("user", user);
+        return "user_profile";
+    }
 }

@@ -12,28 +12,23 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
+
 @Controller
 @RequestMapping("/settings")
 public class SettingsController {
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private SettingsService settingsService;
 
     @GetMapping
-    public String settings(Authentication authentication, Model model) {
-        String email = authentication.getName();
-        User user = userService.getUserByEmail(email);
-        model.addAttribute("user", user);
+    public String settings() {
         return "settings";
     }
 
     @PostMapping(params = "changed=password")
     public String changeEmail(@RequestParam String password, @RequestParam String passwordNew,
-                              @RequestParam String passwordNewRepeat, Authentication authentication, Model model) {
-        String email = authentication.getName();
-        User user = userService.getUserByEmail(email);
+                              @RequestParam String passwordNewRepeat, Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
 
         if (passwordNew == null || !passwordNew.equals(passwordNewRepeat)) {
             model.addAttribute("user", user);
@@ -42,17 +37,14 @@ public class SettingsController {
         }
 
         settingsService.changePassword(user, password, passwordNew);
-        return "redirect:/settings";
+        return "settings";
     }
 
     @PostMapping(params = "changed=email")
-    public String changeEmail(@RequestParam String email, Authentication authentication, Model model) {
-        String userEmail = authentication.getName();
-        User user = userService.getUserByEmail(userEmail);
+    public String changeEmail(@RequestParam String email, Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
         settingsService.changeEmail(user, email);
 
-        // We have to log out because old authentication contains old email and can't verify user with the new one
-        //TODO: should be fixed
-        return "redirect:/logout";
+        return "settings";
     }
 }
