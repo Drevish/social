@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.http.HttpSession;
-
 @Controller
 @RequestMapping("/profile")
 public class ProfileController {
@@ -20,14 +18,7 @@ public class ProfileController {
     private UserService userService;
 
     @GetMapping
-    public String showOwnProfile(Authentication authentication, Model model, HttpSession session) {
-        //TODO: fix that when we start not from profile page session user is empty
-        if (session.getAttribute("user") == null) {
-            String email = authentication.getName();
-            User user = userService.getUserByEmail(email);
-            session.setAttribute("user", user);
-        }
-
+    public String showOwnProfile() {
         return "profile";
     }
 
