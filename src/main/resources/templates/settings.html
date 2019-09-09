@@ -47,7 +47,8 @@
                                 <div class="active-value">
                                     <form th:action="@{/settings}" method="post" class="settings-form">
                                         <input type="text" name="changed" value="email" hidden>
-                                        <input class="form-control" type="email" name="email" th:value="${session.user.email}">
+                                        <input class="form-control" type="email" name="email"
+                                               th:value="${session.user.email}">
                                         <button type="submit" class="btn btn-primary">Change</button>
                                     </form>
                                 </div>

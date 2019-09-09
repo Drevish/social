@@ -7,11 +7,11 @@ import com.drevish.social.exception.UserValidationException;
 import com.drevish.social.model.entity.User;
 
 public interface UserService {
-  User getUserByEmail(String email) throws UserNotFoundException;
+    User getUserByEmail(String email) throws UserNotFoundException;
 
-  User getUserById(Long id) throws UserNotFoundException;
+    User getUserById(Long id) throws UserNotFoundException;
 
-  void register(User user) throws UserExistsException;
+    void register(User user) throws UserExistsException;
 
-  void updateInfo(User user, UserInfo info) throws UserValidationException;
+    void updateInfo(User user, UserInfo info) throws UserValidationException;
 }

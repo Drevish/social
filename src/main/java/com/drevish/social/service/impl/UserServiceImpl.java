@@ -8,13 +8,16 @@ import com.drevish.social.model.entity.User;
 import com.drevish.social.model.repository.UserRepository;
 import com.drevish.social.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public User getUserByEmail(String email) {
@@ -36,7 +39,7 @@ public class UserServiceImpl implements UserService {
             throw new UserExistsException("User with email " + user.getEmail() + " already exists");
         }
 
-        user.setPassword(encryptPassword(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 
@@ -59,9 +62,5 @@ public class UserServiceImpl implements UserService {
         if (errorMessage != null) {
             throw new UserValidationException(errorMessage);
         }
-    }
-
-    private String encryptPassword(String password) {
-        return new BCryptPasswordEncoder().encode(password);
     }
 }

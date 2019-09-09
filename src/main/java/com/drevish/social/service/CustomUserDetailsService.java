@@ -16,19 +16,19 @@ import java.util.Collection;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-  @Autowired
-  private UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-  @Override
-  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    User user = userRepository.findByEmail(username).orElseThrow(
-            () -> new UsernameNotFoundException("User with email " + username + " not found"));
-    return new org.springframework.security.core.userdetails.User(
-            user.getEmail(), user.getPassword(), getAuthorities(user));
-  }
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(username).orElseThrow(
+                () -> new UsernameNotFoundException("User with email " + username + " not found"));
+        return new org.springframework.security.core.userdetails.User(
+                user.getEmail(), user.getPassword(), getAuthorities(user));
+    }
 
-  private Collection<? extends GrantedAuthority> getAuthorities(User user) {
-    String[] userRoles = user.getRoles().stream().map(Role::getName).toArray(String[]::new);
-    return AuthorityUtils.createAuthorityList(userRoles);
-  }
+    private Collection<? extends GrantedAuthority> getAuthorities(User user) {
+        String[] userRoles = user.getRoles().stream().map(Role::getName).toArray(String[]::new);
+        return AuthorityUtils.createAuthorityList(userRoles);
+    }
 }
