@@ -3,9 +3,8 @@ package com.drevish.social.controller;
 import com.drevish.social.controller.dto.UserInfo;
 import com.drevish.social.exception.UserValidationException;
 import com.drevish.social.model.entity.User;
-import com.drevish.social.service.UserService;
+import com.drevish.social.service.EditService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +18,7 @@ import javax.servlet.http.HttpSession;
 @RequestMapping("/edit")
 public class EditController {
     @Autowired
-    private UserService userService;
+    private EditService editService;
 
     @GetMapping
     public String edit(Model model) {
@@ -32,7 +31,7 @@ public class EditController {
         User user = (User) session.getAttribute("user");
 
         try {
-            userService.updateInfo(user, info);
+            editService.updateInfo(user, info);
         } catch (UserValidationException e) {
             model.addAttribute("error", e.getMessage());
             return "edit";
