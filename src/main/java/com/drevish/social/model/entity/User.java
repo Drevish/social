@@ -1,24 +1,15 @@
 package com.drevish.social.model.entity;
 
+import com.drevish.social.anno.Password;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.util.List;
 
 @Data
@@ -49,9 +40,7 @@ public class User {
   private String email;
 
   @Column(name = "password")
-  @NotNull
-  @Pattern(regexp = "[a-z,,A-Z,0-9,_]*", message = "Only latin letters, numbers and _ are allowed")
-  @Length(min = 3, max = 20, message = "Password should have between 3 and 20 symbols")
+  @Password
   private String password;
 
   @ManyToMany(fetch = FetchType.EAGER)
