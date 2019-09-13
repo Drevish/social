@@ -5,6 +5,7 @@ import com.drevish.social.model.entity.User;
 import com.drevish.social.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -19,35 +20,40 @@ import javax.validation.Valid;
 @RequestMapping("/register")
 @Slf4j
 public class RegistrationController {
+    @Value("${view.register}")
+    private String registerView;
 
-  @Autowired
-  private UserService userService;
+    @Value("${path.register}")
+    private String registerPath;
 
-  @GetMapping
-  public String registrationForm(Model model) {
-    model.addAttribute("user", new User());
-    return "register";
-  }
+    @Autowired
+    private UserService userService;
 
-  @PostMapping
-  public String registrationProcess(@Valid User user, Errors errors,
-                                    @ModelAttribute String password_check, Model model) {
-    if (password_check == null || password_check.equals(user.getPassword())) {
-      model.addAttribute("error", "Passwords don't match!");
-      return "register";
+    @GetMapping
+    public String registrationForm(Model model) {
+        model.addAttribute("user", new User());
+        return registerView;
     }
 
-    if (errors.hasErrors()) {
-      return "register";
-    }
+    @PostMapping
+    public String registrationProcess(@Valid User user, Errors errors,
+                                      @ModelAttribute String passwordCheck, Model model) {
+        if (passwordCheck == null || passwordCheck.equals(user.getPassword())) {
+            model.addAttribute("error", "Passwords don't match!");
+            return registerView;
+        }
 
-    try {
-      userService.register(user);
-    } catch (UserExistsException e) {
-      model.addAttribute("error", e.getMessage());
-      return "register";
-    }
+        if (errors.hasErrors()) {
+            return registerView;
+        }
 
-    return "redirect:/login";
-  }
+        try {
+            userService.register(user);
+        } catch (UserExistsException e) {
+            model.addAttribute("error", e.getMessage());
+            return registerView;
+        }
+
+        return "redirect:" + registerPath;
+    }
 }

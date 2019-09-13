@@ -3,8 +3,8 @@ package com.drevish.social.controller;
 import com.drevish.social.exception.InvalidPasswordException;
 import com.drevish.social.model.entity.User;
 import com.drevish.social.service.SettingsService;
-import com.drevish.social.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,15 +17,15 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/settings")
 public class SettingsController implements ValidationExceptionHandling {
-    @Autowired
-    private UserService userService;
+    @Value("${view.settings}")
+    private String settingsView;
 
     @Autowired
     private SettingsService settingsService;
 
     @GetMapping
     public String settings() {
-        return "settings";
+        return settingsView;
     }
 
     @PostMapping(params = "changed=password")
@@ -36,7 +36,7 @@ public class SettingsController implements ValidationExceptionHandling {
         // verify that new password and repeated new password are equals
         if (passwordNew == null || !passwordNew.equals(passwordNewRepeat)) {
             model.addAttribute("error", "New password and repeated password don't match!");
-            return "settings";
+            return settingsView;
         }
 
         try {
@@ -45,7 +45,7 @@ public class SettingsController implements ValidationExceptionHandling {
             model.addAttribute("error", e.getMessage());
         }
 
-        return "settings";
+        return settingsView;
     }
 
     @PostMapping(params = "changed=email")
@@ -53,6 +53,6 @@ public class SettingsController implements ValidationExceptionHandling {
                               HttpSession session) {
         User user = (User) session.getAttribute("user");
         settingsService.changeEmail(user, email);
-        return "settings";
+        return settingsView;
     }
 }
