@@ -1,7 +1,6 @@
 package com.drevish.social.controller;
 
 import com.drevish.social.controller.dto.UserInfo;
-import com.drevish.social.exception.UserValidationException;
 import com.drevish.social.model.entity.User;
 import com.drevish.social.service.EditService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,7 @@ import javax.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/edit")
-public class EditController {
+public class EditController implements ValidationExceptionHandling {
     @Autowired
     private EditService editService;
 
@@ -29,14 +28,7 @@ public class EditController {
     @PostMapping
     public String update(@ModelAttribute UserInfo info, Model model, HttpSession session) {
         User user = (User) session.getAttribute("user");
-
-        try {
-            editService.updateInfo(user, info);
-        } catch (UserValidationException e) {
-            model.addAttribute("error", e.getMessage());
-            return "edit";
-        }
-
+        editService.updateInfo(user, info);
         return "redirect:edit?success";
     }
 }

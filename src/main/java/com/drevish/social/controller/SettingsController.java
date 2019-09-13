@@ -7,14 +7,16 @@ import com.drevish.social.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
-import javax.validation.ConstraintViolationException;
 
 @Controller
 @RequestMapping("/settings")
-public class SettingsController {
+public class SettingsController implements ValidationExceptionHandling {
     @Autowired
     private UserService userService;
 
@@ -51,13 +53,6 @@ public class SettingsController {
                               HttpSession session) {
         User user = (User) session.getAttribute("user");
         settingsService.changeEmail(user, email);
-        return "settings";
-    }
-
-    @ExceptionHandler(ConstraintViolationException.class)
-    public String validationError(ConstraintViolationException e, Model model) {
-        String errorMessage = e.getConstraintViolations().stream().findFirst().get().getMessage();
-        model.addAttribute("error", errorMessage);
         return "settings";
     }
 }
