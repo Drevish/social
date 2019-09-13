@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
 @Constraint(
         validatedBy = {}
 )
-@NotNull
+@NotNull()
 @Length(min = 2, message = "Your name is too short")
 public @interface Name {
     String message() default "Invalid password";
