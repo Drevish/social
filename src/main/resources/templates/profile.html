@@ -18,11 +18,14 @@
             </div>
             <div class="col-9">
                 <div class="content">
-                    <h1>Hello, <span th:text="${session.user.name}"></span> <span th:text="${session.user.surname}"></span>!</h1>
+                    <h1>Hello,
+                        <span th:text="${session.user.name}"></span>
+                        <span th:text="${session.user.surname}"></span>!
+                    </h1>
                     <p>Your email: <span th:text="${session.user.email}"></span></p>
-                    <a th:href="@{/edit}">Edit profile</a><br/>
-                    <a th:href="@{/settings}">Change settings</a><br/>
-                    <a th:href="@{/logout}">Log out</a>
+                    <a th:href="#{path.edit}">Edit profile</a><br/>
+                    <a th:href="#{path.settings}">Change settings</a><br/>
+                    <a th:href="#{path.logout}">Log out</a>
                 </div>
             </div>
         </div>

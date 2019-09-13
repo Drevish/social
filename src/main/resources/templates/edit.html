@@ -19,7 +19,7 @@
                     <h3>Edit profile</h3>
                     <div th:if="${error != null}" class="text-danger" th:text="${error}"></div>
                     <div th:if="${param.success != null}" class="text-success">Successfully updated</div>
-                    <form th:action="@{/edit}" method="post" th:object="${userInfo}">
+                    <form method="post" th:action="#{path.edit}" th:object="${userInfo}">
                         <div class="form-group">
                             <label for="name">Your name: </label>
                             <input class="form-control" type="text" id="name"

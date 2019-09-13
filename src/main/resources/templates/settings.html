@@ -25,7 +25,7 @@
                             <div class="col-6 settings-value">
                                 <div class="default-value"></div>
                                 <div class="active-value">
-                                    <form th:action="@{/settings}" method="post" class="settings-form">
+                                    <form class="settings-form" method="post" th:action="#{path.settings}">
                                         <input type="text" name="changed" value="password" hidden>
                                         <input class="form-control" type="password" name="password"
                                                placeholder="Current password">
@@ -45,7 +45,7 @@
                             <div class="col-6 settings-value">
                                 <div class="default-value" th:text="${session.user.email}"></div>
                                 <div class="active-value">
-                                    <form th:action="@{/settings}" method="post" class="settings-form">
+                                    <form class="settings-form" method="post" th:action="#{path.settings}">
                                         <input type="text" name="changed" value="email" hidden>
                                         <input class="form-control" type="email" name="email"
                                                th:value="${session.user.email}">

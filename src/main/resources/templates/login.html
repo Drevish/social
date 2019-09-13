@@ -11,7 +11,7 @@
 <div class="centered-form">
     <p th:if="${param.error != null}" class="text-danger">Wrong credentials!</p>
     <p th:if="${param.logout != null}" class="text-info">Successfully logged out</p>
-    <form th:action="@{/authenticate}" method="post">
+    <form method="post" th:action="#{path.authenticate}">
         <div class="form-group">
             <input class="form-control" type="email" id="username" name="username" placeholder="Email">
             <br/>
