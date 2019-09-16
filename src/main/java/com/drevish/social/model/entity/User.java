@@ -1,19 +1,19 @@
 package com.drevish.social.model.entity;
 
+import com.drevish.social.anno.Email;
 import com.drevish.social.anno.Name;
 import com.drevish.social.anno.Password;
 import com.drevish.social.anno.Surname;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -33,9 +33,7 @@ public class User {
     private String surname;
 
     @Column(name = "email")
-    @NotNull
-    @NotBlank(message = "Can\'t be empty")
-    @Email(message = "Not a valid email")
+    @Email
     private String email;
 
     @Column(name = "password")

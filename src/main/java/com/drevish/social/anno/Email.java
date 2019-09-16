@@ -1,9 +1,8 @@
 package com.drevish.social.anno;
 
-import org.hibernate.validator.constraints.Length;
-
 import javax.validation.Constraint;
 import javax.validation.Payload;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -17,9 +16,10 @@ import java.lang.annotation.Target;
         validatedBy = {}
 )
 @NotNull
-@Length(min = 2, message = "Your name is too short")
-public @interface Name {
-    String message() default "Invalid password";
+@NotBlank(message = "Can\'t be empty")
+@javax.validation.constraints.Email(message = "Not a valid email")
+public @interface Email {
+    String message() default "Invalid email";
 
     Class<?>[] groups() default {};
 
