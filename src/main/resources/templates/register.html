@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/core.css}">
+</head>
+<body>
+
+<div class="centered-form">
+    <div class="text-danger font-weight-bold mb-2" th:if="${error != null}" th:text="${error}"></div>
+
+    <form method="post" th:action="#{path.register}" th:object="${userRegistrationInfo}">
+
+        <div class="form-group">
+            <div class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+            <input class="form-control" type="text" id="name" th:field="*{name}" placeholder="Name">
+            <br/>
+        </div>
+
+        <div class="form-group">
+            <div class="text-danger" th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"></div>
+            <input class="form-control" type="text" id="surname" th:field="*{surname}" placeholder="Surname">
+            <br/>
+        </div>
+
+        <div class="form-group">
+            <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+            <input class="form-control" type="email" id="email" th:field="*{email}" placeholder="Email">
+            <br/>
+        </div>
+
+        <div class="form-group">
+            <div class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+            <input class="form-control" type="password" id="password" th:field="*{password}" placeholder="Password">
+            <br/>
+        </div>
+
+        <div class="form-group">
+            <input class="form-control" id="passwordCheck" placeholder="Password check"
+                   th:field="*{passwordCheck}" type="password">
+            <br/>
+        </div>
+
+        <input type="submit" value="Register" class="btn btn-block btn-primary">
+    </form>
+</div>
+
+</body>
+</html>

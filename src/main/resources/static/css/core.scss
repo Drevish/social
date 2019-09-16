@@ -1,0 +1,55 @@
+$header-height: 50px;
+
+header {
+  position: relative;
+  z-index: 100000;
+  top: 0;
+  height: $header-height;
+  width: 100%;
+  background-color: #486ae3;
+
+  .container {
+    color: #ffffff;
+    height: 100%;
+
+    .row {
+      height: 100%;
+    }
+  }
+
+  .logo {
+    font-size: 24px;
+
+    a {
+      color: #ffffff;
+
+      &:hover {
+        color: #ffffff;
+        text-decoration: none;
+      }
+    }
+  }
+}
+
+
+main{
+  margin-top: 10px;
+}
+
+.centered-form {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+
+  max-width: 250px;
+}
+
+.form-group {
+  margin-bottom: 0;
+}
+

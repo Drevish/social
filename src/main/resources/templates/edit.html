@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit profile</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/core.css}">
+</head>
+<body>
+
+<div class="header" th:replace="/fragments/header :: header"></div>
+
+<main>
+    <div class="container">
+        <div class="row">
+            <div class="col-3" th:insert="/fragments/side-menu :: side-menu"></div>
+            <div class="col-9">
+                <div class="content">
+                    <h3>Edit profile</h3>
+                    <div th:if="${error != null}" class="text-danger" th:text="${error}"></div>
+                    <div th:if="${param.success != null}" class="text-success">Successfully updated</div>
+                    <form method="post" th:action="#{path.edit}" th:object="${userInfo}">
+                        <div class="form-group">
+                            <label for="name">Your name: </label>
+                            <input class="form-control" type="text" id="name"
+                                   name="name" th:value="${session.user.name}">
+                            <br/>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="surname">Your surname: </label>
+                            <input class="form-control" type="text" id="surname"
+                                   name="surname" th:value="${session.user.surname}">
+                            <br/>
+                        </div>
+
+                        <input type="submit" value="Save" class="btn btn-block btn-success">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script th:src="@{/js/jquery-3.4.1.min.js}"></script>
+<script th:src="@{/js/popper.min.js}"></script>
+<script th:src="@{/js/bootstrap.js}"></script>
+
+</body>
+</html>

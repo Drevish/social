@@ -3,8 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Home</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <style>
+        body{
+            padding-top: 30px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Hello!</h1>
+    <div class="container">
+        <h1>Welcome to social!</h1>
+        <h3><a th:href="#{path.login}">Log in</a><br/></h3>
+        <h3><a th:href="#{path.register}">Register</a></h3>
+    </div>
 </body>
 </html>

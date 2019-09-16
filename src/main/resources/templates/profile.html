@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/core.css}">
+</head>
+<body>
+
+<div class="header" th:replace="/fragments/header :: header"></div>
+
+<main>
+    <div class="container">
+        <div class="row">
+            <div class="col-3" th:insert="/fragments/side-menu :: side-menu">
+            </div>
+            <div class="col-9">
+                <div class="content">
+                    <h1>Hello,
+                        <span th:text="${session.user.name}"></span>
+                        <span th:text="${session.user.surname}"></span>!
+                    </h1>
+                    <p>Your email: <span th:text="${session.user.email}"></span></p>
+                    <a th:href="#{path.edit}">Edit profile</a><br/>
+                    <a th:href="#{path.settings}">Change settings</a><br/>
+                    <a th:href="#{path.logout}">Log out</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script th:src="@{/js/jquery-3.4.1.min.js}"></script>
+<script th:src="@{/js/popper.min.js}"></script>
+<script th:src="@{/js/bootstrap.js}"></script>
+
+</body>
+</html>
