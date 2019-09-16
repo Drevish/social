@@ -3,6 +3,7 @@ package com.drevish.social.controller;
 import com.drevish.social.exception.UserNotFoundException;
 import com.drevish.social.model.entity.User;
 import com.drevish.social.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
+@Slf4j
 @RequestMapping("/profile")
 public class ProfileController {
     @Value("${view.profile}")
@@ -41,7 +43,7 @@ public class ProfileController {
                 return "redirect:" + profilePath;
             }
         } catch (UserNotFoundException e) {
-            e.printStackTrace();
+            log.warn("User not found with id " + userId);
         }
 
         model.addAttribute("user", user);

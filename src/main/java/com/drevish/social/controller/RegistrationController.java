@@ -45,7 +45,6 @@ public class RegistrationController {
             return registerView;
         }
 
-        log.info(model.toString());
         if (errors.hasErrors()) {
             return registerView;
         }
@@ -58,6 +57,7 @@ public class RegistrationController {
             return registerView;
         }
 
+        log.info("New user registered with username " + userRegistrationInfo.getEmail());
         return "redirect:" + loginPath;
     }
 }

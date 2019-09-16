@@ -3,6 +3,7 @@ package com.drevish.social.controller;
 import com.drevish.social.controller.dto.UserInfo;
 import com.drevish.social.model.entity.User;
 import com.drevish.social.service.EditService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.HttpSession;
 
 @Controller
+@Slf4j
 @RequestMapping("/edit")
 public class EditController implements ValidationExceptionHandling {
     @Value("${view.edit}")
@@ -36,6 +38,7 @@ public class EditController implements ValidationExceptionHandling {
     public String update(@ModelAttribute UserInfo info, Model model, HttpSession session) {
         User user = (User) session.getAttribute("user");
         editService.updateInfo(user, info);
+        log.info("User with email" + user.getEmail() + " changed info");
         return "redirect:" + editPath + "?success";
     }
 }

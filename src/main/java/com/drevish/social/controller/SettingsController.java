@@ -3,6 +3,7 @@ package com.drevish.social.controller;
 import com.drevish.social.exception.InvalidPasswordException;
 import com.drevish.social.model.entity.User;
 import com.drevish.social.service.SettingsService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpSession;
 
 @Controller
+@Slf4j
 @RequestMapping("/settings")
 public class SettingsController implements ValidationExceptionHandling {
     @Value("${view.settings}")
@@ -49,6 +51,7 @@ public class SettingsController implements ValidationExceptionHandling {
             return settingsView;
         }
 
+        log.info("User with email" + user.getEmail() + " changed password");
         return "redirect:" + settingsPath + "?success";
     }
 
@@ -57,6 +60,7 @@ public class SettingsController implements ValidationExceptionHandling {
                               HttpSession session) {
         User user = (User) session.getAttribute("user");
         settingsService.changeEmail(user, email);
+        log.info("User with email" + user.getEmail() + " changed email");
         return "redirect:" + settingsPath + "?success";
     }
 }
