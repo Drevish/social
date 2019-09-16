@@ -20,6 +20,9 @@ public class SettingsController implements ValidationExceptionHandling {
     @Value("${view.settings}")
     private String settingsView;
 
+    @Value("${path.settings}")
+    private String settingsPath;
+
     @Autowired
     private SettingsService settingsService;
 
@@ -43,9 +46,10 @@ public class SettingsController implements ValidationExceptionHandling {
             settingsService.changePassword(user, password, passwordNew);
         } catch (InvalidPasswordException e) {
             model.addAttribute("error", e.getMessage());
+            return settingsView;
         }
 
-        return settingsView;
+        return "redirect:" + settingsPath + "?success";
     }
 
     @PostMapping(params = "changed=email")
@@ -53,6 +57,6 @@ public class SettingsController implements ValidationExceptionHandling {
                               HttpSession session) {
         User user = (User) session.getAttribute("user");
         settingsService.changeEmail(user, email);
-        return settingsView;
+        return "redirect:" + settingsPath + "?success";
     }
 }

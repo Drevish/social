@@ -19,6 +19,7 @@
                 <div class="content">
                     <h3>General settings</h3>
                     <div class="text-danger" th:if="${error != null}" th:text="${error}"></div>
+                    <div class="text-success" th:if="${param.success != null}">Successfully changed</div>
                     <div class="container-fluid settings-container">
                         <div class="row settings-row">
                             <div class="col-3 settings-name">Password</div>
