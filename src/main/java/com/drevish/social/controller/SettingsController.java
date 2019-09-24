@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpSession;
+import java.security.Principal;
 
 @Controller
 @Slf4j
 @RequestMapping("/settings")
-public class SettingsController implements ValidationExceptionHandling {
+public class SettingsController extends ControllerWithUserInfo {
     @Value("${view.settings}")
     private String settingsView;
 
@@ -35,8 +35,8 @@ public class SettingsController implements ValidationExceptionHandling {
 
     @PostMapping(params = "changed=password")
     public String changePassword(@RequestParam String password, @RequestParam String passwordNew,
-                                 @RequestParam String passwordNewRepeat, Model model, HttpSession session) {
-        User user = (User) session.getAttribute("user");
+                                 @RequestParam String passwordNewRepeat, Principal principal, Model model) {
+        User user = getCurrentUser(principal);
 
         // verify that new password and repeated new password are equals
         if (passwordNew == null || !passwordNew.equals(passwordNewRepeat)) {
@@ -45,7 +45,9 @@ public class SettingsController implements ValidationExceptionHandling {
         }
 
         try {
-            settingsService.changePassword(user, password, passwordNew);
+            if (causesValidationException(model, () -> settingsService.changePassword(user, password, passwordNew))) {
+                return settingsView;
+            }
         } catch (InvalidPasswordException e) {
             model.addAttribute("error", e.getMessage());
             return settingsView;
@@ -56,11 +58,10 @@ public class SettingsController implements ValidationExceptionHandling {
     }
 
     @PostMapping(params = "changed=email")
-    public String changeEmail(@RequestParam String email, Model model,
-                              HttpSession session) {
-        User user = (User) session.getAttribute("user");
-        settingsService.changeEmail(user, email);
-        log.info("User with email" + user.getEmail() + " changed email");
+    public String changeEmail(@RequestParam String email, Principal principal, Model model) {
+        if (causesValidationException(model, () -> settingsService.changeEmail(getCurrentUser(principal), email))) {
+            return settingsView;
+        }
         return "redirect:" + settingsPath + "?success";
     }
 }

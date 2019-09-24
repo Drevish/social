@@ -9,7 +9,10 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.validation.ConstraintViolationException;
@@ -43,11 +46,21 @@ public class SettingsServiceTest {
     }
 
     @Test
+    @WithMockUser
     public void shouldChangeEmail() {
         String email = "email@gmail.com";
         service.changeEmail(user, email);
         assertEquals(email, user.getEmail());
         verify(repository, times(1)).save(user);
+    }
+
+    @Test
+    @WithMockUser
+    public void shouldRefreshSecurityContextWhenChangedEmail() {
+        String email = "email@gmail.com";
+        service.changeEmail(user, email);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        assertEquals(email, authentication.getName());
     }
 
     @Test(expected = ConstraintViolationException.class)
@@ -61,6 +74,7 @@ public class SettingsServiceTest {
     }
 
     @Test
+    @WithMockUser
     public void shouldChangePassword() {
         service.changePassword(user, oldPassword, validPassword);
         assertTrue(passwordEncoder.matches(validPassword, user.getPassword()));

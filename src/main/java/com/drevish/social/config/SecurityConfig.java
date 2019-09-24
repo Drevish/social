@@ -36,9 +36,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(passwordEncoder());
     }
 
-    @Autowired
-    private CustomAuthenticationSuccessHandler handler;
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -54,7 +51,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .loginPage("/login")
                 .loginProcessingUrl("/authenticate")
-                .successHandler(handler)
                 .failureUrl("/login?error")
                 .permitAll()
                 .and()

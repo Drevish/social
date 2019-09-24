@@ -3,6 +3,7 @@ package com.drevish.social.controller;
 import com.drevish.social.controller.dto.UserInfo;
 import com.drevish.social.model.entity.User;
 import com.drevish.social.service.EditService;
+import com.drevish.social.service.UserService;
 import org.hamcrest.core.StringContains;
 import org.junit.Assert;
 import org.junit.Before;
@@ -12,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -22,25 +22,27 @@ import javax.validation.ConstraintViolationException;
 import java.util.Collections;
 
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@AutoConfigureMockMvc(addFilters = false)
-@WithMockUser
+@AutoConfigureMockMvc
+@WithMockUser(username = "email@email.com")
 public class EditControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
+    private UserService userService;
+
+    @MockBean
     private EditService editService;
 
     private User testUser;
-
-    private MockHttpSession httpSessionWithUser;
 
     private ConstraintViolationException violationException;
 
@@ -53,8 +55,7 @@ public class EditControllerTest {
                 .password("password")
                 .build();
 
-        httpSessionWithUser = new MockHttpSession();
-        httpSessionWithUser.putValue("user", testUser);
+        when(userService.getUserByEmail(testUser.getEmail())).thenReturn(testUser);
 
         ConstraintViolation<String> exampleViolation = mock(ConstraintViolation.class);
         when(exampleViolation.getMessage()).thenReturn("");
@@ -63,9 +64,9 @@ public class EditControllerTest {
 
     @Test
     public void shouldShowEditPage() throws Exception {
-        mockMvc.perform(get("/edit")
-                .session(httpSessionWithUser))
+        mockMvc.perform(get("/edit"))
                 .andExpect(status().isOk())
+                .andExpect(model().attribute("user", testUser))
                 .andExpect(content().string(StringContains.containsString(testUser.getName())))
                 .andExpect(content().string(StringContains.containsString(testUser.getSurname())));
     }
@@ -86,10 +87,11 @@ public class EditControllerTest {
 
     private void verifyThatErrorIsReturnedBack(UserInfo userInfo) throws Exception {
         mockMvc.perform(post("/edit")
-                .session(httpSessionWithUser)
+                .with(csrf())
                 .param("name", userInfo.getName())
                 .param("surname", userInfo.getSurname()))
                 .andExpect(status().isOk())
+                .andExpect(model().attribute("user", testUser))
                 .andExpect(model().attributeExists("error"));
     }
 
@@ -99,9 +101,9 @@ public class EditControllerTest {
         String surnameBefore = testUser.getSurname();
         UserInfo validInfo = new UserInfo("new name", "new surname");
         mockMvc.perform(post("/edit")
+                .with(csrf())
                 .param("name", validInfo.getName())
-                .param("surname", validInfo.getSurname())
-                .session(httpSessionWithUser))
+                .param("surname", validInfo.getSurname()))
                 .andExpect(redirectedUrl("/edit?success"));
         verify(editService, times(1)).updateInfo(testUser, validInfo);
         Assert.assertEquals(nameBefore, testUser.getName());

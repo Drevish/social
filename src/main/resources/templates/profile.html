@@ -19,10 +19,10 @@
             <div class="col-9">
                 <div class="content">
                     <h1>Hello,
-                        <span th:text="${session.user.name}"></span>
-                        <span th:text="${session.user.surname}"></span>!
+                        <span th:text="${user.name}"></span>
+                        <span th:text="${user.surname}"></span>!
                     </h1>
-                    <p>Your email: <span th:text="${session.user.email}"></span></p>
+                    <p>Your email: <span th:text="${user.email}"></span></p>
                     <a th:href="#{path.edit}">Edit profile</a><br/>
                     <a th:href="#{path.settings}">Change settings</a><br/>
                     <a th:href="#{path.logout}">Log out</a>

@@ -3,6 +3,7 @@ package com.drevish.social.controller;
 import com.drevish.social.exception.InvalidPasswordException;
 import com.drevish.social.model.entity.User;
 import com.drevish.social.service.SettingsService;
+import com.drevish.social.service.UserService;
 import org.hamcrest.core.StringContains;
 import org.junit.Assert;
 import org.junit.Before;
@@ -12,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -22,14 +22,15 @@ import javax.validation.ConstraintViolationException;
 import java.util.Collections;
 
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@AutoConfigureMockMvc(addFilters = false)
-@WithMockUser
+@AutoConfigureMockMvc
+@WithMockUser(username = "email@email.com")
 public class SettingsControllerTest {
 
     @Autowired
@@ -38,9 +39,10 @@ public class SettingsControllerTest {
     @MockBean
     private SettingsService settingsService;
 
-    private User testUser;
+    @MockBean
+    private UserService userService;
 
-    private MockHttpSession httpSessionWithUser;
+    private User testUser;
 
     private ConstraintViolationException violationException;
 
@@ -53,8 +55,7 @@ public class SettingsControllerTest {
                 .password("password")
                 .build();
 
-        httpSessionWithUser = new MockHttpSession();
-        httpSessionWithUser.putValue("user", testUser);
+        when(userService.getUserByEmail(testUser.getEmail())).thenReturn(testUser);
 
         ConstraintViolation<String> exampleViolation = mock(ConstraintViolation.class);
         when(exampleViolation.getMessage()).thenReturn("");
@@ -63,21 +64,22 @@ public class SettingsControllerTest {
 
     @Test
     public void shouldShowSettingsPage() throws Exception {
-        mockMvc.perform(get("/settings")
-                .session(httpSessionWithUser))
+        mockMvc.perform(get("/settings"))
                 .andExpect(status().isOk())
+                .andExpect(model().attribute("user", testUser))
                 .andExpect(content().string(StringContains.containsString(testUser.getEmail())));
     }
 
     @Test
     public void shouldReturnWithErrorIfPasswordsDontMatch() throws Exception {
         mockMvc.perform(post("/settings")
+                .with(csrf())
                 .param("changed", "password")
                 .param("password", "password")
                 .param("passwordNew", "password1")
-                .param("passwordNewRepeat", "password2")
-                .session(httpSessionWithUser))
+                .param("passwordNewRepeat", "password2"))
                 .andExpect(status().isOk())
+                .andExpect(model().attribute("user", testUser))
                 .andExpect(model().attributeExists("error"));
     }
 
@@ -87,12 +89,13 @@ public class SettingsControllerTest {
         doThrow(new InvalidPasswordException("")).when(settingsService)
                 .changePassword(testUser, password, password);
         mockMvc.perform(post("/settings")
+                .with(csrf())
                 .param("changed", "password")
                 .param("password", password)
                 .param("passwordNew", password)
-                .param("passwordNewRepeat", password)
-                .session(httpSessionWithUser))
+                .param("passwordNewRepeat", password))
                 .andExpect(status().isOk())
+                .andExpect(model().attribute("user", testUser))
                 .andExpect(model().attributeExists("error"));
     }
 
@@ -101,12 +104,13 @@ public class SettingsControllerTest {
         String password = "password";
         doThrow(violationException).when(settingsService).changePassword(testUser, password, password);
         mockMvc.perform(post("/settings")
+                .with(csrf())
                 .param("changed", "password")
                 .param("password", password)
                 .param("passwordNew", password)
-                .param("passwordNewRepeat", password)
-                .session(httpSessionWithUser))
+                .param("passwordNewRepeat", password))
                 .andExpect(status().isOk())
+                .andExpect(model().attribute("user", testUser))
                 .andExpect(model().attributeExists("error"));
     }
 
@@ -115,11 +119,11 @@ public class SettingsControllerTest {
         String oldPassword = testUser.getPassword();
         String newPassword = "newPassword";
         mockMvc.perform(post("/settings")
+                .with(csrf())
                 .param("changed", "password")
                 .param("password", oldPassword)
                 .param("passwordNew", newPassword)
-                .param("passwordNewRepeat", newPassword)
-                .session(httpSessionWithUser))
+                .param("passwordNewRepeat", newPassword))
                 .andExpect(redirectedUrl("/settings?success"));
         verify(settingsService, times(1)).changePassword(testUser, oldPassword, newPassword);
         Assert.assertEquals(oldPassword, testUser.getPassword());
@@ -130,10 +134,11 @@ public class SettingsControllerTest {
         String invalidEmail = "invalid";
         doThrow(violationException).when(settingsService).changeEmail(testUser, invalidEmail);
         mockMvc.perform(post("/settings")
+                .with(csrf())
                 .param("changed", "email")
-                .param("email", invalidEmail)
-                .session(httpSessionWithUser))
+                .param("email", invalidEmail))
                 .andExpect(status().isOk())
+                .andExpect(model().attribute("user", testUser))
                 .andExpect(model().attributeExists("error"));
     }
 
@@ -142,9 +147,9 @@ public class SettingsControllerTest {
         String emailBefore = testUser.getEmail();
         String newEmail = "newEmail@email.com";
         mockMvc.perform(post("/settings")
+                .with(csrf())
                 .param("changed", "email")
-                .param("email", newEmail)
-                .session(httpSessionWithUser))
+                .param("email", newEmail))
                 .andExpect(redirectedUrl("/settings?success"));
         verify(settingsService, times(1)).changeEmail(testUser, newEmail);
         Assert.assertEquals(emailBefore, testUser.getEmail());

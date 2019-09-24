@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.http.HttpSession;
+import java.security.Principal;
 
 @Controller
 @Slf4j
 @RequestMapping("/edit")
-public class EditController implements ValidationExceptionHandling {
+public class EditController extends ControllerWithUserInfo {
     @Value("${view.edit}")
     private String editView;
 
@@ -35,9 +35,13 @@ public class EditController implements ValidationExceptionHandling {
     }
 
     @PostMapping
-    public String update(@ModelAttribute UserInfo info, Model model, HttpSession session) {
-        User user = (User) session.getAttribute("user");
-        editService.updateInfo(user, info);
+    public String update(@ModelAttribute UserInfo info, Principal principal, Model model) {
+        User user = getCurrentUser(principal);
+
+        if (causesValidationException(model, () -> editService.updateInfo(user, info))) {
+            return editView;
+        }
+
         log.info("User with email" + user.getEmail() + " changed info");
         return "redirect:" + editPath + "?success";
     }
