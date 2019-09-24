@@ -3,15 +3,13 @@ package com.drevish.social.controller;
 import com.drevish.social.exception.InvalidPasswordException;
 import com.drevish.social.model.entity.User;
 import com.drevish.social.service.SettingsService;
+import com.drevish.social.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
@@ -28,6 +26,14 @@ public class SettingsController extends ControllerWithUserInfo {
     @Autowired
     private SettingsService settingsService;
 
+    @Autowired
+    private UserService userService;
+
+    @ModelAttribute
+    private User user(Principal principal) {
+        return userService.getUserByEmail(principal.getName());
+    }
+
     @GetMapping
     public String settings() {
         return settingsView;
@@ -36,7 +42,7 @@ public class SettingsController extends ControllerWithUserInfo {
     @PostMapping(params = "changed=password")
     public String changePassword(@RequestParam String password, @RequestParam String passwordNew,
                                  @RequestParam String passwordNewRepeat, Principal principal, Model model) {
-        User user = getCurrentUser(principal);
+        User user = userService.getUserByEmail(principal.getName());
 
         // verify that new password and repeated new password are equals
         if (passwordNew == null || !passwordNew.equals(passwordNewRepeat)) {
@@ -59,7 +65,8 @@ public class SettingsController extends ControllerWithUserInfo {
 
     @PostMapping(params = "changed=email")
     public String changeEmail(@RequestParam String email, Principal principal, Model model) {
-        if (causesValidationException(model, () -> settingsService.changeEmail(getCurrentUser(principal), email))) {
+        User user = userService.getUserByEmail(principal.getName());
+        if (causesValidationException(model, () -> settingsService.changeEmail(user, email))) {
             return settingsView;
         }
         return "redirect:" + settingsPath + "?success";

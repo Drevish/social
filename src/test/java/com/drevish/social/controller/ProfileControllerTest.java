@@ -60,7 +60,6 @@ public class ProfileControllerTest {
     public void shouldShowProfilePage() throws Exception {
         mockMvc.perform(get("/profile"))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("user", testUser))
                 .andExpect(model().attribute("userInfo", testUserInfo))
                 .andExpect(content().string(StringContains.containsString(testUser.getName())))
                 .andExpect(content().string(StringContains.containsString(testUser.getSurname())));

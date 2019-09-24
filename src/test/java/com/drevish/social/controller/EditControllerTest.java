@@ -2,7 +2,6 @@ package com.drevish.social.controller;
 
 import com.drevish.social.model.entity.User;
 import com.drevish.social.model.entity.UserInfo;
-import com.drevish.social.service.EditService;
 import com.drevish.social.service.UserInfoService;
 import com.drevish.social.service.UserService;
 import org.hamcrest.core.StringContains;
@@ -40,9 +39,6 @@ public class EditControllerTest {
     private UserService userService;
 
     @MockBean
-    private EditService editService;
-
-    @MockBean
     private UserInfoService userInfoService;
 
     private User testUser;
@@ -72,7 +68,6 @@ public class EditControllerTest {
     public void shouldShowEditPage() throws Exception {
         mockMvc.perform(get("/edit"))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("user", testUser))
                 .andExpect(model().attribute("userInfo", testUserInfo))
                 .andExpect(content().string(StringContains.containsString(testUser.getName())))
                 .andExpect(content().string(StringContains.containsString(testUser.getSurname())));
@@ -81,14 +76,12 @@ public class EditControllerTest {
     @Test
     public void shouldReturnWithErrorIfNameIsInvalid() throws Exception {
         UserInfo infoWithInvalidName = new UserInfo("", testUser.getSurname());
-        doThrow(violationException).when(editService).updateInfo(testUser, infoWithInvalidName);
         verifyThatErrorIsReturnedBack(infoWithInvalidName);
     }
 
     @Test
     public void shouldReturnWithErrorIfSurnameIsInvalid() throws Exception {
         UserInfo infoWithInvalidSurname = new UserInfo(testUser.getName(), "");
-        doThrow(violationException).when(editService).updateInfo(testUser, infoWithInvalidSurname);
         verifyThatErrorIsReturnedBack(infoWithInvalidSurname);
     }
 
@@ -98,7 +91,6 @@ public class EditControllerTest {
                 .param("name", userInfo.getName())
                 .param("surname", userInfo.getSurname()))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("user", testUser))
                 .andExpect(model().attribute("userInfo", testUserInfo))
                 .andExpect(model().attributeExists("error"));
     }
@@ -113,7 +105,7 @@ public class EditControllerTest {
                 .param("name", validInfo.getName())
                 .param("surname", validInfo.getSurname()))
                 .andExpect(redirectedUrl("/edit?success"));
-        verify(editService, times(1)).updateInfo(testUser, validInfo);
+        verify(userInfoService, times(1)).saveForUser(testUserInfo, testUser);
         Assert.assertEquals(nameBefore, testUser.getName());
         Assert.assertEquals(surnameBefore, testUser.getSurname());
     }

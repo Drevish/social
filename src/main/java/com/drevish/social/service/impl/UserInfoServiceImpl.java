@@ -28,4 +28,11 @@ public class UserInfoServiceImpl implements UserInfoService {
     public void save(UserInfo userInfo) {
         userInfoRepository.save(userInfo);
     }
+
+    @Override
+    public void saveForUser(UserInfo userInfo, User user) {
+        userInfo.setId(user.getId());
+        userInfo.setUser(user);
+        save(userInfo);
+    }
 }

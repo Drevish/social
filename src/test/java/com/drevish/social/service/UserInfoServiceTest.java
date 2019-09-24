@@ -73,4 +73,11 @@ public class UserInfoServiceTest {
         userInfoService.save(testUserInfo);
         verify(userInfoRepository, times(1)).save(testUserInfo);
     }
+
+    @Test
+    public void shouldSetIdAndUserAndSaveUserInfo() {
+        UserInfo userInfoWithOnlyNameAndSurname = new UserInfo(testUserInfo.getName(), testUserInfo.getSurname());
+        userInfoService.saveForUser(userInfoWithOnlyNameAndSurname, testUser);
+        verify(userInfoRepository, times(1)).save(testUserInfo);
+    }
 }
