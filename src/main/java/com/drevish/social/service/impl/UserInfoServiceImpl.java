@@ -23,4 +23,9 @@ public class UserInfoServiceImpl implements UserInfoService {
         return userInfoRepository.findById(user.getId()).orElseThrow(() ->
                 new UserNotFoundException("No user info with specified user id was found"));
     }
+
+    @Override
+    public void save(UserInfo userInfo) {
+        userInfoRepository.save(userInfo);
+    }
 }

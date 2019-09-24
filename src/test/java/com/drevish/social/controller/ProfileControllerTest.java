@@ -1,6 +1,8 @@
 package com.drevish.social.controller;
 
 import com.drevish.social.model.entity.User;
+import com.drevish.social.model.entity.UserInfo;
+import com.drevish.social.service.UserInfoService;
 import com.drevish.social.service.UserService;
 import org.hamcrest.core.StringContains;
 import org.junit.Before;
@@ -28,7 +30,11 @@ public class ProfileControllerTest {
     @MockBean
     private UserService userService;
 
+    @MockBean
+    private UserInfoService userInfoService;
+
     private User testUser;
+    private UserInfo testUserInfo;
 
     @Before
     public void before() {
@@ -37,8 +43,10 @@ public class ProfileControllerTest {
                 .surname("surname")
                 .email("email")
                 .build();
+        testUserInfo = new UserInfo(testUser.getName(), testUser.getSurname());
 
         when(userService.getUserByEmail(testUser.getEmail())).thenReturn(testUser);
+        when(userInfoService.getUserInfoByEmail(testUser.getEmail())).thenReturn(testUserInfo);
     }
 
     @Test
@@ -53,6 +61,7 @@ public class ProfileControllerTest {
         mockMvc.perform(get("/profile"))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("user", testUser))
+                .andExpect(model().attribute("userInfo", testUserInfo))
                 .andExpect(content().string(StringContains.containsString(testUser.getName())))
                 .andExpect(content().string(StringContains.containsString(testUser.getSurname())));
     }

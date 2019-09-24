@@ -1,7 +1,7 @@
 package com.drevish.social.service;
 
-import com.drevish.social.controller.dto.UserInfo;
 import com.drevish.social.model.entity.User;
+import com.drevish.social.model.entity.UserInfo;
 import com.drevish.social.model.repository.UserRepository;
 import org.junit.Before;
 import org.junit.Test;

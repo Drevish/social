@@ -5,4 +5,6 @@ import com.drevish.social.model.entity.UserInfo;
 
 public interface UserInfoService {
     UserInfo getUserInfoByEmail(String email) throws UserNotFoundException;
+
+    void save(UserInfo userInfo);
 }

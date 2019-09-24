@@ -1,7 +1,7 @@
 package com.drevish.social.controller;
 
-import com.drevish.social.controller.dto.UserInfo;
 import com.drevish.social.model.entity.User;
+import com.drevish.social.model.entity.UserInfo;
 import com.drevish.social.service.EditService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +29,7 @@ public class EditController extends ControllerWithUserInfo {
     private EditService editService;
 
     @GetMapping
-    public String edit(Model model) {
-        model.addAttribute("userInfo", new UserInfo());
+    public String edit() {
         return editView;
     }
 

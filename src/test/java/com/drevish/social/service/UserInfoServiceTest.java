@@ -15,7 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -42,10 +42,7 @@ public class UserInfoServiceTest {
                 .password("password")
                 .build();
 
-        testUserInfo = new UserInfo();
-        testUserInfo.setId(testUser.getId());
-        testUserInfo.setName(testUser.getName());
-        testUserInfo.setSurname(testUser.getSurname());
+        testUserInfo = new UserInfo(testUser.getId(), testUser, testUser.getName(), testUser.getSurname());
     }
 
 
@@ -53,16 +50,15 @@ public class UserInfoServiceTest {
     public void shouldThrowExceptionIfUserNotFoundInUserService() {
         when(userService.getUserByEmail(testUser.getEmail())).thenThrow(UserNotFoundException.class);
         when(userInfoRepository.findById(testUser.getId())).thenReturn(Optional.of(testUserInfo));
-        UserInfo userInfo = userInfoService.getUserInfoByEmail(testUser.getEmail());
+        userInfoService.getUserInfoByEmail(testUser.getEmail());
     }
 
     @Test(expected = UserNotFoundException.class)
     public void shouldThrowExceptionIfUserNotFoundInUserInfoRepository() {
         when(userService.getUserByEmail(testUser.getEmail())).thenReturn(testUser);
         when(userInfoRepository.findById(testUser.getId())).thenReturn(Optional.empty());
-        UserInfo userInfo = userInfoService.getUserInfoByEmail(testUser.getEmail());
+        userInfoService.getUserInfoByEmail(testUser.getEmail());
     }
-
 
     @Test
     public void shouldReturnUserInfoByEmail() {
@@ -70,5 +66,11 @@ public class UserInfoServiceTest {
         when(userInfoRepository.findById(testUser.getId())).thenReturn(Optional.of(testUserInfo));
         UserInfo userInfo = userInfoService.getUserInfoByEmail(testUser.getEmail());
         assertEquals(testUserInfo, userInfo);
+    }
+
+    @Test
+    public void shouldSaveUserInfo() {
+        userInfoService.save(testUserInfo);
+        verify(userInfoRepository, times(1)).save(testUserInfo);
     }
 }

@@ -1,8 +1,9 @@
 package com.drevish.social.controller;
 
-import com.drevish.social.controller.dto.UserInfo;
 import com.drevish.social.model.entity.User;
+import com.drevish.social.model.entity.UserInfo;
 import com.drevish.social.service.EditService;
+import com.drevish.social.service.UserInfoService;
 import com.drevish.social.service.UserService;
 import org.hamcrest.core.StringContains;
 import org.junit.Assert;
@@ -32,7 +33,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @WithMockUser(username = "email@email.com")
 public class EditControllerTest {
-
     @Autowired
     private MockMvc mockMvc;
 
@@ -42,7 +42,11 @@ public class EditControllerTest {
     @MockBean
     private EditService editService;
 
+    @MockBean
+    private UserInfoService userInfoService;
+
     private User testUser;
+    private UserInfo testUserInfo;
 
     private ConstraintViolationException violationException;
 
@@ -54,8 +58,10 @@ public class EditControllerTest {
                 .email("email@email.com")
                 .password("password")
                 .build();
+        testUserInfo = new UserInfo(testUser.getName(), testUser.getSurname());
 
         when(userService.getUserByEmail(testUser.getEmail())).thenReturn(testUser);
+        when(userInfoService.getUserInfoByEmail(testUser.getEmail())).thenReturn(testUserInfo);
 
         ConstraintViolation<String> exampleViolation = mock(ConstraintViolation.class);
         when(exampleViolation.getMessage()).thenReturn("");
@@ -67,6 +73,7 @@ public class EditControllerTest {
         mockMvc.perform(get("/edit"))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("user", testUser))
+                .andExpect(model().attribute("userInfo", testUserInfo))
                 .andExpect(content().string(StringContains.containsString(testUser.getName())))
                 .andExpect(content().string(StringContains.containsString(testUser.getSurname())));
     }
@@ -92,6 +99,7 @@ public class EditControllerTest {
                 .param("surname", userInfo.getSurname()))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("user", testUser))
+                .andExpect(model().attribute("userInfo", testUserInfo))
                 .andExpect(model().attributeExists("error"));
     }
 

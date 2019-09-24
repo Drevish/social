@@ -3,7 +3,9 @@ package com.drevish.social.service.impl;
 import com.drevish.social.exception.UserExistsException;
 import com.drevish.social.exception.UserNotFoundException;
 import com.drevish.social.model.entity.User;
+import com.drevish.social.model.entity.UserInfo;
 import com.drevish.social.model.repository.UserRepository;
+import com.drevish.social.service.UserInfoService;
 import com.drevish.social.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,6 +15,9 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserInfoService infoService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -39,5 +44,8 @@ public class UserServiceImpl implements UserService {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
+
+        UserInfo info = new UserInfo(user.getId(), user, user.getName(), user.getSurname());
+        infoService.save(info);
     }
 }
