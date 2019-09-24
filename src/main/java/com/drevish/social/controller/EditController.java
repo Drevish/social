@@ -34,10 +34,10 @@ public class EditController extends ControllerWithUserInfo {
     }
 
     @PostMapping
-    public String update(@ModelAttribute UserInfo info, Principal principal, Model model) {
+    public String update(@ModelAttribute UserInfo userInfo, Principal principal, Model model) {
         User user = getCurrentUser(principal);
 
-        if (causesValidationException(model, () -> editService.updateInfo(user, info))) {
+        if (causesValidationException(model, () -> editService.updateInfo(user, userInfo))) {
             return editView;
         }
 
