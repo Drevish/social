@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.security.Principal;
 
-public abstract class ControllerWithUserInfo extends MyController {
+public abstract class ControllerWithUserInfo {
     @Autowired
     protected UserInfoService userInfoService;
 

@@ -10,12 +10,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 
 import java.util.Collection;
 
 @Service
-@Validated
 public class SettingsServiceImpl implements SettingsService {
     @Autowired
     private UserRepository userRepository;
@@ -31,8 +29,7 @@ public class SettingsServiceImpl implements SettingsService {
     }
 
     @Override
-    public void changePassword(User user, String oldPassword,
-                               String newPassword) {
+    public void changePassword(User user, String oldPassword, String newPassword) {
         checkOldPassword(user, oldPassword);
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);

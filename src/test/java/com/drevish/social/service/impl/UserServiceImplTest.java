@@ -37,14 +37,9 @@ public class UserServiceImplTest {
     private UserService service;
 
     private UserRegistrationInfo registrationInfo;
-    private String existingEmail;
 
     @Before
     public void before() {
-        existingEmail = "email";
-
-        when(repository.findByEmail(existingEmail)).thenReturn(Optional.of(new User()));
-
         registrationInfo = new UserRegistrationInfo();
         registrationInfo.setEmail("new");
         registrationInfo.setPassword("new");
@@ -55,12 +50,14 @@ public class UserServiceImplTest {
 
     @Test
     public void shouldGetByEmail() {
-        assertNotNull(service.getUserByEmail("email"));
+        when(repository.findByEmail(registrationInfo.getEmail())).thenReturn(Optional.of(new User()));
+        assertNotNull(service.getUserByEmail(registrationInfo.getEmail()));
     }
 
     @Test(expected = UserNotFoundException.class)
     public void shouldThrowUserNotFoundExceptionByEmail() {
-        service.getUserByEmail("invalid");
+        when(repository.findByEmail(registrationInfo.getEmail())).thenReturn(Optional.empty());
+        service.getUserByEmail(registrationInfo.getEmail());
     }
 
     @Test
@@ -89,12 +86,12 @@ public class UserServiceImplTest {
 
     @Test(expected = UserExistsException.class)
     public void shouldThrowUserExistsExceptionWhenRegister() {
-        registrationInfo.setEmail(existingEmail);
+        when(repository.findByEmail(registrationInfo.getEmail())).thenReturn(Optional.of(new User()));
         service.register(registrationInfo);
     }
 
     @TestConfiguration
-    static class UserServiceTestContextConfiguration {
+    static class UserServiceImplTestContextConfiguration {
         @Bean
         public UserService userService() {
             return new UserServiceImpl();
@@ -103,18 +100,6 @@ public class UserServiceImplTest {
         @Bean
         public PasswordEncoder passwordEncoder() {
             return new FakePasswordEncoder();
-        }
-    }
-
-    private static class FakePasswordEncoder implements PasswordEncoder {
-        @Override
-        public String encode(CharSequence charSequence) {
-            return "encoded" + charSequence.toString();
-        }
-
-        @Override
-        public boolean matches(CharSequence charSequence, String s) {
-            return charSequence.toString().equals("encoded" + s);
         }
     }
 }

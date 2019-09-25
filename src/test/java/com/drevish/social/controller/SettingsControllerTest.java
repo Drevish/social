@@ -71,7 +71,6 @@ public class SettingsControllerTest {
     public void shouldShowSettingsPage() throws Exception {
         mockMvc.perform(get("/settings"))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("user", testUser))
                 .andExpect(model().attribute("userInfo", testUserInfo))
                 .andExpect(content().string(StringContains.containsString(testUser.getEmail())));
     }
@@ -81,11 +80,10 @@ public class SettingsControllerTest {
         mockMvc.perform(post("/settings")
                 .with(csrf())
                 .param("changed", "password")
-                .param("password", "password")
-                .param("passwordNew", "password1")
+                .param("passwordOld", "password")
+                .param("password", "password1")
                 .param("passwordNewRepeat", "password2"))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("user", testUser))
                 .andExpect(model().attribute("userInfo", testUserInfo))
                 .andExpect(model().attributeExists("error"));
     }
@@ -98,27 +96,25 @@ public class SettingsControllerTest {
         mockMvc.perform(post("/settings")
                 .with(csrf())
                 .param("changed", "password")
+                .param("passwordOld", password)
                 .param("password", password)
-                .param("passwordNew", password)
                 .param("passwordNewRepeat", password))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("user", testUser))
                 .andExpect(model().attribute("userInfo", testUserInfo))
                 .andExpect(model().attributeExists("error"));
     }
 
     @Test
+    //TODO: add all invalidity types
     public void shouldReturnWithErrorIfNewPasswordInvalid() throws Exception {
-        String password = "password";
-        doThrow(violationException).when(settingsService).changePassword(testUser, password, password);
+        String invalidPassword = "q";
         mockMvc.perform(post("/settings")
                 .with(csrf())
                 .param("changed", "password")
-                .param("password", password)
-                .param("passwordNew", password)
-                .param("passwordNewRepeat", password))
+                .param("passwordOld", "password")
+                .param("password", invalidPassword)
+                .param("passwordNewRepeat", invalidPassword))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("user", testUser))
                 .andExpect(model().attribute("userInfo", testUserInfo))
                 .andExpect(model().attributeExists("error"));
     }
@@ -130,8 +126,8 @@ public class SettingsControllerTest {
         mockMvc.perform(post("/settings")
                 .with(csrf())
                 .param("changed", "password")
-                .param("password", oldPassword)
-                .param("passwordNew", newPassword)
+                .param("passwordOld", oldPassword)
+                .param("password", newPassword)
                 .param("passwordNewRepeat", newPassword))
                 .andExpect(redirectedUrl("/settings?success"));
         verify(settingsService, times(1)).changePassword(testUser, oldPassword, newPassword);
@@ -139,15 +135,13 @@ public class SettingsControllerTest {
     }
 
     @Test
-    public void shouldReturnWithErrorIfEmailIsInvalid() throws Exception {
+    public void shouldReturnWithErrorIfEmailIsNull() throws Exception {
         String invalidEmail = "invalid";
-        doThrow(violationException).when(settingsService).changeEmail(testUser, invalidEmail);
         mockMvc.perform(post("/settings")
                 .with(csrf())
                 .param("changed", "email")
                 .param("email", invalidEmail))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("user", testUser))
                 .andExpect(model().attribute("userInfo", testUserInfo))
                 .andExpect(model().attributeExists("error"));
     }
