@@ -2,6 +2,7 @@ package com.drevish.social.controller;
 
 import com.drevish.social.exception.UserNotFoundException;
 import com.drevish.social.model.entity.User;
+import com.drevish.social.model.entity.UserInfo;
 import com.drevish.social.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -31,29 +31,28 @@ public class ProfileController extends ControllerWithUserInfo {
     @Autowired
     private UserService userService;
 
-    @ModelAttribute
-    private User user(Principal principal) {
-        return userService.getUserByEmail(principal.getName());
-    }
-    
     @GetMapping
-    public String showOwnProfile() {
+    public String showOwnProfile(Principal principal, Model model) {
+        model.addAttribute("user", userService.getUserByEmail(principal.getName()));
         return profileView;
     }
 
     @GetMapping("/id{userId}")
     public String showUserProfile(@PathVariable Long userId, Principal principal, Model model) {
-        User user = null;
+        User user;
         try {
             user = userService.getUserById(userId);
-            if (user.getEmail().equals(principal.getName())) {
-                return "redirect:" + profilePath;
-            }
         } catch (UserNotFoundException e) {
             log.warn("User not found with id " + userId);
+            return "redirect:" + profilePath;
         }
 
-        model.addAttribute("user", user);
+        if (user.getEmail().equals(principal.getName())) {
+            return "redirect:" + profilePath;
+        }
+
+        UserInfo userInfo = userInfoService.getUserInfoByEmail(user.getEmail());
+        model.addAttribute("userInfo", userInfo);
         return otherProfileView;
     }
 }
