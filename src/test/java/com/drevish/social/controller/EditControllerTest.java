@@ -49,12 +49,10 @@ public class EditControllerTest {
     @Before
     public void before() {
         testUser = User.builder()
-                .name("name")
-                .surname("surname")
                 .email("email@email.com")
                 .password("password")
                 .build();
-        testUserInfo = new UserInfo(testUser.getName(), testUser.getSurname());
+        testUserInfo = new UserInfo("name", "surname");
 
         when(userService.getUserByEmail(testUser.getEmail())).thenReturn(testUser);
         when(userInfoService.getUserInfoByEmail(testUser.getEmail())).thenReturn(testUserInfo);
@@ -69,19 +67,19 @@ public class EditControllerTest {
         mockMvc.perform(get("/edit"))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("userInfo", testUserInfo))
-                .andExpect(content().string(StringContains.containsString(testUser.getName())))
-                .andExpect(content().string(StringContains.containsString(testUser.getSurname())));
+                .andExpect(content().string(StringContains.containsString(testUserInfo.getName())))
+                .andExpect(content().string(StringContains.containsString(testUserInfo.getSurname())));
     }
 
     @Test
     public void shouldReturnWithErrorIfNameIsInvalid() throws Exception {
-        UserInfo infoWithInvalidName = new UserInfo("", testUser.getSurname());
+        UserInfo infoWithInvalidName = new UserInfo("", testUserInfo.getSurname());
         verifyThatErrorIsReturnedBack(infoWithInvalidName);
     }
 
     @Test
     public void shouldReturnWithErrorIfSurnameIsInvalid() throws Exception {
-        UserInfo infoWithInvalidSurname = new UserInfo(testUser.getName(), "");
+        UserInfo infoWithInvalidSurname = new UserInfo(testUserInfo.getName(), "");
         verifyThatErrorIsReturnedBack(infoWithInvalidSurname);
     }
 
@@ -97,16 +95,18 @@ public class EditControllerTest {
 
     @Test
     public void shouldCallUpdateAndNotChangeUserByItself() throws Exception {
-        String nameBefore = testUser.getName();
-        String surnameBefore = testUser.getSurname();
+        String nameBefore = testUserInfo.getName();
+        String surnameBefore = testUserInfo.getSurname();
         UserInfo validInfo = new UserInfo("new name", "new surname");
+        System.out.println("Test info before test method: " + testUserInfo);
         mockMvc.perform(post("/edit")
                 .with(csrf())
                 .param("name", validInfo.getName())
                 .param("surname", validInfo.getSurname()))
                 .andExpect(redirectedUrl("/edit?success"));
-        verify(userInfoService, times(1)).saveForUser(testUserInfo, testUser);
-        Assert.assertEquals(nameBefore, testUser.getName());
-        Assert.assertEquals(surnameBefore, testUser.getSurname());
+        System.out.println("Test info after test method: " + testUserInfo);
+        verify(userInfoService, times(1)).saveForUser(validInfo, testUser);
+        Assert.assertEquals(nameBefore, testUserInfo.getName());
+        Assert.assertEquals(surnameBefore, testUserInfo.getSurname());
     }
 }

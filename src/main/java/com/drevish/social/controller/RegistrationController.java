@@ -1,9 +1,7 @@
 package com.drevish.social.controller;
 
-import com.drevish.social.controller.dto.UserAssembler;
 import com.drevish.social.controller.dto.UserRegistrationInfo;
 import com.drevish.social.exception.UserExistsException;
-import com.drevish.social.model.entity.User;
 import com.drevish.social.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,8 +48,7 @@ public class RegistrationController {
         }
 
         try {
-            User user = UserAssembler.assemble(userRegistrationInfo);
-            userService.register(user);
+            userService.register(userRegistrationInfo);
         } catch (UserExistsException e) {
             model.addAttribute("error", e.getMessage());
             return registerView;

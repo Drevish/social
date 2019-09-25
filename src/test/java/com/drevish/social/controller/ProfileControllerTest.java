@@ -39,11 +39,9 @@ public class ProfileControllerTest {
     @Before
     public void before() {
         testUser = User.builder()
-                .name("name")
-                .surname("surname")
                 .email("email")
                 .build();
-        testUserInfo = new UserInfo(testUser.getName(), testUser.getSurname());
+        testUserInfo = new UserInfo("name", "surname");
 
         when(userService.getUserByEmail(testUser.getEmail())).thenReturn(testUser);
         when(userInfoService.getUserInfoByEmail(testUser.getEmail())).thenReturn(testUserInfo);
@@ -61,7 +59,7 @@ public class ProfileControllerTest {
         mockMvc.perform(get("/profile"))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("userInfo", testUserInfo))
-                .andExpect(content().string(StringContains.containsString(testUser.getName())))
-                .andExpect(content().string(StringContains.containsString(testUser.getSurname())));
+                .andExpect(content().string(StringContains.containsString(testUserInfo.getName())))
+                .andExpect(content().string(StringContains.containsString(testUserInfo.getSurname())));
     }
 }

@@ -1,9 +1,7 @@
 package com.drevish.social.model.entity;
 
 import com.drevish.social.anno.Email;
-import com.drevish.social.anno.Name;
 import com.drevish.social.anno.Password;
-import com.drevish.social.anno.Surname;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,14 +21,6 @@ public class User {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "name")
-    @Name
-    private String name;
-
-    @Column(name = "surname")
-    @Surname
-    private String surname;
 
     @Column(name = "email")
     @Email

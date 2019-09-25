@@ -1,8 +1,7 @@
 package com.drevish.social.controller;
 
+import com.drevish.social.controller.dto.UserInfoDto;
 import com.drevish.social.model.entity.User;
-import com.drevish.social.model.entity.UserInfo;
-import com.drevish.social.service.UserInfoService;
 import com.drevish.social.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +28,12 @@ public class EditController extends ControllerWithUserInfo {
     private String editPath;
 
     @Autowired
-    private UserInfoService userInfoService;
-
-    @Autowired
     private UserService userService;
+
+    @ModelAttribute
+    public UserInfoDto userInfoDto(Principal principal) {
+        return UserInfoDto.assemble(userInfo(principal));
+    }
 
     @GetMapping
     public String edit() {
@@ -40,15 +41,14 @@ public class EditController extends ControllerWithUserInfo {
     }
 
     @PostMapping
-    public String update(@ModelAttribute @Valid UserInfo userInfo, Errors errors, Principal principal, Model model) {
+    public String update(@ModelAttribute @Valid UserInfoDto userInfoDto, Errors errors, Principal principal, Model model) {
         if (errors.hasErrors()) {
-            // TODO: change to normal usage and in template too
-            model.addAttribute("error", errors.toString());
+            model.addAttribute("error", "Ivalid fields, please try again");
             return editView;
         }
 
         User user = userService.getUserByEmail(principal.getName());
-        userInfoService.saveForUser(userInfo, user);
+        userInfoService.saveForUser(userInfoDto.assemble(), user);
 
         log.info("User with email" + user.getEmail() + " changed info");
         return "redirect:" + editPath + "?success";

@@ -1,5 +1,6 @@
 package com.drevish.social.controller;
 
+import com.drevish.social.controller.dto.UserRegistrationInfo;
 import com.drevish.social.exception.UserExistsException;
 import com.drevish.social.model.entity.User;
 import com.drevish.social.service.UserService;
@@ -31,21 +32,28 @@ public class RegistrationControllerTest {
     private UserService userService;
 
     private User testUser;
+    private UserRegistrationInfo testRegistrationInfo;
 
     private LinkedMultiValueMap<String, String> paramsMap;
 
     @Before
     public void before() {
         testUser = User.builder()
-                .name("name")
-                .surname("surname")
+
                 .email("email@email.com")
                 .password("password")
                 .build();
 
+        testRegistrationInfo = new UserRegistrationInfo();
+        testRegistrationInfo.setEmail(testUser.getEmail());
+        testRegistrationInfo.setPassword(testUser.getPassword());
+        testRegistrationInfo.setPasswordCheck(testUser.getPassword());
+        testRegistrationInfo.setName("name");
+        testRegistrationInfo.setSurname("surname");
+
         paramsMap = new LinkedMultiValueMap<>();
-        paramsMap.add("name", testUser.getName());
-        paramsMap.add("surname", testUser.getSurname());
+        paramsMap.add("name", "name");
+        paramsMap.add("surname", "surname");
         paramsMap.add("email", testUser.getEmail());
         paramsMap.add("password", testUser.getPassword());
         paramsMap.add("passwordCheck", testUser.getPassword());
@@ -104,7 +112,7 @@ public class RegistrationControllerTest {
 
     @Test
     public void shouldReturnRegistrationPageIfUserAlreadyExists() throws Exception {
-        doThrow(new UserExistsException("")).when(userService).register(testUser);
+        doThrow(new UserExistsException("")).when(userService).register(testRegistrationInfo);
         mockMvc.perform(post("/register")
                 .params(paramsMap))
                 .andExpect(status().isOk())
@@ -116,7 +124,7 @@ public class RegistrationControllerTest {
         mockMvc.perform(post("/register")
                 .params(paramsMap))
                 .andExpect(redirectedUrl("/login"));
-        verify(userService, times(1)).register(testUser);
+        verify(userService, times(1)).register(testRegistrationInfo);
     }
 
     private void reassignValueToParamsMap(String name, String value) {

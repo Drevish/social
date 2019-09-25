@@ -54,12 +54,10 @@ public class SettingsControllerTest {
     @Before
     public void before() {
         testUser = User.builder()
-                .name("name")
-                .surname("surname")
                 .email("email@email.com")
                 .password("password")
                 .build();
-        testUserInfo = new UserInfo(testUser.getName(), testUser.getSurname());
+        testUserInfo = new UserInfo("name", "surname");
 
         when(userService.getUserByEmail(testUser.getEmail())).thenReturn(testUser);
         when(userInfoService.getUserInfoByEmail(testUser.getEmail())).thenReturn(testUserInfo);

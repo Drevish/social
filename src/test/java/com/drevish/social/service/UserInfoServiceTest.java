@@ -36,13 +36,11 @@ public class UserInfoServiceTest {
     public void before() {
         testUser = User.builder()
                 .id(1L)
-                .name("name")
-                .surname("surname")
                 .email("email")
                 .password("password")
                 .build();
 
-        testUserInfo = new UserInfo(testUser.getId(), testUser, testUser.getName(), testUser.getSurname());
+        testUserInfo = new UserInfo(testUser.getId(), testUser, "name", "surname");
     }
 
 

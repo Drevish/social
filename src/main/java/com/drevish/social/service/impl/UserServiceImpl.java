@@ -1,5 +1,6 @@
 package com.drevish.social.service.impl;
 
+import com.drevish.social.controller.dto.UserRegistrationInfo;
 import com.drevish.social.exception.UserExistsException;
 import com.drevish.social.exception.UserNotFoundException;
 import com.drevish.social.model.entity.User;
@@ -37,15 +38,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void register(User user) {
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new UserExistsException("User with email " + user.getEmail() + " already exists");
+    public void register(UserRegistrationInfo registrationInfo) {
+        if (userRepository.findByEmail(registrationInfo.getEmail()).isPresent()) {
+            throw new UserExistsException("User with email " + registrationInfo.getEmail() + " already exists");
         }
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        User user = assembleUserFromRegistrationInfo(registrationInfo);
         userRepository.save(user);
+        UserInfo userInfo = new UserInfo(registrationInfo.getName(), registrationInfo.getSurname());
+        infoService.saveForUser(userInfo, user);
+    }
 
-        UserInfo info = new UserInfo(user.getId(), user, user.getName(), user.getSurname());
-        infoService.save(info);
+    private User assembleUserFromRegistrationInfo(UserRegistrationInfo info) {
+        return User.builder()
+                .email(info.getEmail())
+                .password(passwordEncoder.encode(info.getPassword()))
+                .build();
     }
 }
