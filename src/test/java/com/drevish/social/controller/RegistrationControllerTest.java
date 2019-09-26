@@ -1,27 +1,30 @@
 package com.drevish.social.controller;
 
+import com.drevish.social.controller.dto.UserRegistrationInfo;
 import com.drevish.social.exception.UserExistsException;
-import com.drevish.social.model.entity.User;
 import com.drevish.social.service.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.util.LinkedMultiValueMap;
 
+import static com.drevish.social.controller.ControllerTestUtils.testUser;
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc(addFilters = false)
+@WebMvcTest(controllers = RegistrationController.class)
+@AutoConfigureMockMvc
 public class RegistrationControllerTest {
 
     @Autowired
@@ -30,25 +33,25 @@ public class RegistrationControllerTest {
     @MockBean
     private UserService userService;
 
-    private User testUser;
+    private UserRegistrationInfo testRegistrationInfo;
 
-    private LinkedMultiValueMap<String, String> paramsMap;
+    private LinkedMultiValueMap<String, String> paramsMapWithRegistrationInfo;
 
     @Before
     public void before() {
-        testUser = User.builder()
-                .name("name")
-                .surname("surname")
-                .email("email@email.com")
-                .password("password")
-                .build();
+        testRegistrationInfo = new UserRegistrationInfo();
+        testRegistrationInfo.setEmail(testUser.getEmail());
+        testRegistrationInfo.setPassword(testUser.getPassword());
+        testRegistrationInfo.setPasswordCheck(testUser.getPassword());
+        testRegistrationInfo.setName("name");
+        testRegistrationInfo.setSurname("surname");
 
-        paramsMap = new LinkedMultiValueMap<>();
-        paramsMap.add("name", testUser.getName());
-        paramsMap.add("surname", testUser.getSurname());
-        paramsMap.add("email", testUser.getEmail());
-        paramsMap.add("password", testUser.getPassword());
-        paramsMap.add("passwordCheck", testUser.getPassword());
+        paramsMapWithRegistrationInfo = new LinkedMultiValueMap<>();
+        paramsMapWithRegistrationInfo.add("name", testRegistrationInfo.getName());
+        paramsMapWithRegistrationInfo.add("surname", testRegistrationInfo.getSurname());
+        paramsMapWithRegistrationInfo.add("email", testUser.getEmail());
+        paramsMapWithRegistrationInfo.add("password", testUser.getPassword());
+        paramsMapWithRegistrationInfo.add("passwordCheck", testUser.getPassword());
     }
 
     @Test
@@ -58,69 +61,62 @@ public class RegistrationControllerTest {
     }
 
     @Test
-    public void shouldReturnRegistrationPageIfNameIsInvalid() throws Exception {
-        reassignValueToParamsMap("name", "");
-        mockMvc.perform(post("/register")
-                .params(paramsMap))
-                .andExpect(status().isOk())
-                .andExpect(model().attributeHasFieldErrors("userRegistrationInfo", "name"));
+    public void shouldRegisterAndRedirectToLoginPage() throws Exception {
+        postRegistrationInfoToRegister()
+                .andExpect(redirectedUrl("/login"));
+        verify(userService, times(1)).register(testRegistrationInfo);
     }
 
     @Test
-    public void shouldReturnRegistrationPageIfSurnameIsInvalid() throws Exception {
-        reassignValueToParamsMap("surname", "");
-        mockMvc.perform(post("/register")
-                .params(paramsMap))
-                .andExpect(status().isOk())
-                .andExpect(model().attributeHasFieldErrors("userRegistrationInfo", "surname"));
+    public void shouldReturnBackIfNameIsInvalid() throws Exception {
+        verifyThatReturnsBackWithFieldErrorAttribute("name");
+    }
+
+
+    @Test
+    public void shouldReturnBackIfSurnameIsInvalid() throws Exception {
+        verifyThatReturnsBackWithFieldErrorAttribute("surname");
     }
 
     @Test
-    public void shouldReturnRegistrationPageIfEmailIsInvalid() throws Exception {
-        reassignValueToParamsMap("email", "");
-        mockMvc.perform(post("/register")
-                .params(paramsMap))
-                .andExpect(status().isOk())
-                .andExpect(model().attributeHasFieldErrors("userRegistrationInfo", "email"));
+    public void shouldReturnBackIfEmailIsInvalid() throws Exception {
+        verifyThatReturnsBackWithFieldErrorAttribute("email");
     }
 
     @Test
-    public void shouldReturnRegistrationPageIfPasswordsIsInvalid() throws Exception {
-        reassignValueToParamsMap("password", "");
-        mockMvc.perform(post("/register")
-                .params(paramsMap))
+    public void shouldReturnBackIfPasswordsIsInvalid() throws Exception {
+        verifyThatReturnsBackWithFieldErrorAttribute("password");
+    }
+
+    private void verifyThatReturnsBackWithFieldErrorAttribute(String invalidField) throws Exception {
+        paramsMapWithRegistrationInfo.remove(invalidField);
+        postRegistrationInfoToRegister()
                 .andExpect(status().isOk())
-                .andExpect(model().attributeHasFieldErrors("userRegistrationInfo", "password"));
+                .andExpect(model().attributeHasFieldErrors("userRegistrationInfo", invalidField));
+        verify(userService, never()).register(testRegistrationInfo);
     }
 
     @Test
     public void shouldReturnRegistrationPageIfPasswordsDontMatch() throws Exception {
-        reassignValueToParamsMap("passwordCheck", "");
-        mockMvc.perform(post("/register")
-                .params(paramsMap))
-                .andExpect(status().isOk())
-                .andExpect(model().attributeExists("error"));
+        paramsMapWithRegistrationInfo.remove("passwordCheck");
+        verifyThatReturnsBackWithErrorAttribute();
     }
 
     @Test
     public void shouldReturnRegistrationPageIfUserAlreadyExists() throws Exception {
-        doThrow(new UserExistsException("")).when(userService).register(testUser);
-        mockMvc.perform(post("/register")
-                .params(paramsMap))
+        doThrow(new UserExistsException("")).when(userService).register(testRegistrationInfo);
+        verifyThatReturnsBackWithErrorAttribute();
+    }
+
+    private void verifyThatReturnsBackWithErrorAttribute() throws Exception {
+        postRegistrationInfoToRegister()
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("error"));
     }
 
-    @Test
-    public void shouldRegisterAndRedirectToLoginPage() throws Exception {
-        mockMvc.perform(post("/register")
-                .params(paramsMap))
-                .andExpect(redirectedUrl("/login"));
-        verify(userService, times(1)).register(testUser);
-    }
-
-    private void reassignValueToParamsMap(String name, String value) {
-        paramsMap.remove(name);
-        paramsMap.add(name, value);
+    private ResultActions postRegistrationInfoToRegister() throws Exception {
+        return mockMvc.perform(post("/register")
+                .with(csrf())
+                .params(paramsMapWithRegistrationInfo));
     }
 }

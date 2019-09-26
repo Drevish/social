@@ -1,24 +1,25 @@
 package com.drevish.social.controller;
 
-import com.drevish.social.controller.dto.UserInfo;
+import com.drevish.social.controller.dto.UserInfoDto;
 import com.drevish.social.model.entity.User;
-import com.drevish.social.service.EditService;
+import com.drevish.social.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+import java.security.Principal;
 
 @Controller
 @Slf4j
 @RequestMapping("/edit")
-public class EditController implements ValidationExceptionHandling {
+public class EditController extends ControllerWithUserInfo {
     @Value("${view.edit}")
     private String editView;
 
@@ -26,18 +27,27 @@ public class EditController implements ValidationExceptionHandling {
     private String editPath;
 
     @Autowired
-    private EditService editService;
+    private UserService userService;
+
+    @ModelAttribute
+    public UserInfoDto userInfoDto(Principal principal) {
+        return UserInfoDto.assemble(userInfo(principal));
+    }
 
     @GetMapping
-    public String edit(Model model) {
-        model.addAttribute("userInfo", new UserInfo());
+    public String edit() {
         return editView;
     }
 
     @PostMapping
-    public String update(@ModelAttribute UserInfo info, Model model, HttpSession session) {
-        User user = (User) session.getAttribute("user");
-        editService.updateInfo(user, info);
+    public String update(@ModelAttribute @Valid UserInfoDto userInfoDto, Errors errors, Principal principal) {
+        if (errors.hasErrors()) {
+            return editView;
+        }
+
+        User user = userService.getUserByEmail(principal.getName());
+        userInfoService.saveForUser(userInfoDto.assemble(), user);
+
         log.info("User with email" + user.getEmail() + " changed info");
         return "redirect:" + editPath + "?success";
     }

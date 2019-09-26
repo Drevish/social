@@ -26,12 +26,13 @@
                             <div class="col-6 settings-value">
                                 <div class="default-value"></div>
                                 <div class="active-value">
-                                    <form class="settings-form" method="post" th:action="#{path.settings}">
+                                    <form class="settings-form" method="post" th:action="#{path.settings}"
+                                          th:object="${passwordDto}">
                                         <input type="text" name="changed" value="password" hidden>
-                                        <input class="form-control" type="password" name="password"
+                                        <input class="form-control" name="passwordOld" type="password"
                                                placeholder="Current password">
                                         <input class="form-control" type="password" name="passwordNew"
-                                               placeholder="New password">
+                                               placeholder="New password" th:field="*{password}">
                                         <input class="form-control" type="password" name="passwordNewRepeat"
                                                placeholder="Repeat new password">
                                         <button type="submit" class="btn btn-primary">Change</button>
@@ -44,12 +45,13 @@
                         <div class="row settings-row">
                             <div class="col-3 settings-name">Email</div>
                             <div class="col-6 settings-value">
-                                <div class="default-value" th:text="${session.user.email}"></div>
+                                <div class="default-value" th:text="${emailDto.email}"></div>
                                 <div class="active-value">
-                                    <form class="settings-form" method="post" th:action="#{path.settings}">
+                                    <form class="settings-form" method="post" th:action="#{path.settings}"
+                                          th:object="${emailDto}">
                                         <input type="text" name="changed" value="email" hidden>
                                         <input class="form-control" type="email" name="email"
-                                               th:value="${session.user.email}">
+                                               th:field="*{email}">
                                         <button type="submit" class="btn btn-primary">Change</button>
                                     </form>
                                 </div>

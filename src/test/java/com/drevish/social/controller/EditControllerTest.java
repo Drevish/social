@@ -1,110 +1,79 @@
 package com.drevish.social.controller;
 
-import com.drevish.social.controller.dto.UserInfo;
-import com.drevish.social.model.entity.User;
-import com.drevish.social.service.EditService;
+import com.drevish.social.model.entity.UserInfo;
 import org.hamcrest.core.StringContains;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.mock.web.MockHttpSession;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import java.util.Collections;
-
-import static org.mockito.Mockito.*;
+import static com.drevish.social.controller.ControllerTestUtils.testUser;
+import static com.drevish.social.controller.ControllerTestUtils.testUserInfo;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc(addFilters = false)
-@WithMockUser
-public class EditControllerTest {
-
+@WebMvcTest(controllers = EditController.class)
+@AutoConfigureMockMvc
+@WithMockUser(username = "email@email.com")
+public class EditControllerTest extends ControllerTestWithUserAndUserInfo {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
-    private EditService editService;
-
-    private User testUser;
-
-    private MockHttpSession httpSessionWithUser;
-
-    private ConstraintViolationException violationException;
-
-    @Before
-    public void before() {
-        testUser = User.builder()
-                .name("name")
-                .surname("surname")
-                .email("email@email.com")
-                .password("password")
-                .build();
-
-        httpSessionWithUser = new MockHttpSession();
-        httpSessionWithUser.putValue("user", testUser);
-
-        ConstraintViolation<String> exampleViolation = mock(ConstraintViolation.class);
-        when(exampleViolation.getMessage()).thenReturn("");
-        violationException = new ConstraintViolationException(Collections.singleton(exampleViolation));
+    @Test
+    public void shouldShowEditPage() throws Exception {
+        mockMvc.perform(get("/edit"))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("userInfo", testUserInfo))
+                .andExpect(content().string(StringContains.containsString(testUserInfo.getName())))
+                .andExpect(content().string(StringContains.containsString(testUserInfo.getSurname())));
     }
 
     @Test
-    public void shouldShowEditPage() throws Exception {
-        mockMvc.perform(get("/edit")
-                .session(httpSessionWithUser))
-                .andExpect(status().isOk())
-                .andExpect(content().string(StringContains.containsString(testUser.getName())))
-                .andExpect(content().string(StringContains.containsString(testUser.getSurname())));
+    public void shouldCallUpdateAndNotChangeUserInfoByItself() throws Exception {
+        UserInfo beforePost = new UserInfo(testUserInfo.getName(), testUserInfo.getSurname());
+        UserInfo newUserInfo = new UserInfo("new name", "new surname");
+        postUserInfoToEdit(newUserInfo)
+                .andExpect(redirectedUrl("/edit?success"));
+
+        verify(userInfoService, times(1)).saveForUser(newUserInfo, testUser);
+        Assert.assertEquals(testUserInfo.getName(), beforePost.getName());
+        Assert.assertEquals(testUserInfo.getSurname(), beforePost.getSurname());
     }
 
     @Test
     public void shouldReturnWithErrorIfNameIsInvalid() throws Exception {
-        UserInfo infoWithInvalidName = new UserInfo("", testUser.getSurname());
-        doThrow(violationException).when(editService).updateInfo(testUser, infoWithInvalidName);
-        verifyThatErrorIsReturnedBack(infoWithInvalidName);
+        UserInfo infoWithInvalidName = new UserInfo("", testUserInfo.getSurname());
+        verifyThatReturnedBackWithFieldErrorAttribute(infoWithInvalidName, "name");
     }
 
     @Test
     public void shouldReturnWithErrorIfSurnameIsInvalid() throws Exception {
-        UserInfo infoWithInvalidSurname = new UserInfo(testUser.getName(), "");
-        doThrow(violationException).when(editService).updateInfo(testUser, infoWithInvalidSurname);
-        verifyThatErrorIsReturnedBack(infoWithInvalidSurname);
+        UserInfo infoWithInvalidSurname = new UserInfo(testUserInfo.getName(), "");
+        verifyThatReturnedBackWithFieldErrorAttribute(infoWithInvalidSurname, "surname");
     }
 
-    private void verifyThatErrorIsReturnedBack(UserInfo userInfo) throws Exception {
-        mockMvc.perform(post("/edit")
-                .session(httpSessionWithUser)
-                .param("name", userInfo.getName())
-                .param("surname", userInfo.getSurname()))
+    private void verifyThatReturnedBackWithFieldErrorAttribute(UserInfo userInfo, String fieldName) throws Exception {
+        postUserInfoToEdit(userInfo)
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("error"));
+                .andExpect(model().attribute("userInfo", testUserInfo))
+                .andExpect(model().attributeHasFieldErrors("userInfoDto", fieldName));
     }
 
-    @Test
-    public void shouldCallUpdateAndNotChangeUserByItself() throws Exception {
-        String nameBefore = testUser.getName();
-        String surnameBefore = testUser.getSurname();
-        UserInfo validInfo = new UserInfo("new name", "new surname");
-        mockMvc.perform(post("/edit")
-                .param("name", validInfo.getName())
-                .param("surname", validInfo.getSurname())
-                .session(httpSessionWithUser))
-                .andExpect(redirectedUrl("/edit?success"));
-        verify(editService, times(1)).updateInfo(testUser, validInfo);
-        Assert.assertEquals(nameBefore, testUser.getName());
-        Assert.assertEquals(surnameBefore, testUser.getSurname());
+    private ResultActions postUserInfoToEdit(UserInfo userInfo) throws Exception {
+        return mockMvc.perform(post("/edit")
+                .with(csrf())
+                .param("name", userInfo.getName())
+                .param("surname", userInfo.getSurname()));
     }
 }

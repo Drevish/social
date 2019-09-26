@@ -12,17 +12,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import javax.sql.DataSource;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserDetailsService customUserDetailsService;
-
-    @Autowired
-    private DataSource dataSource;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -35,9 +30,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .userDetailsService(customUserDetailsService)
                 .passwordEncoder(passwordEncoder());
     }
-
-    @Autowired
-    private CustomAuthenticationSuccessHandler handler;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -54,7 +46,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .loginPage("/login")
                 .loginProcessingUrl("/authenticate")
-                .successHandler(handler)
                 .failureUrl("/login?error")
                 .permitAll()
                 .and()
