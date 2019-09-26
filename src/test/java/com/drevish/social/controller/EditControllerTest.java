@@ -54,20 +54,20 @@ public class EditControllerTest extends ControllerTestWithUserAndUserInfo {
     @Test
     public void shouldReturnWithErrorIfNameIsInvalid() throws Exception {
         UserInfo infoWithInvalidName = new UserInfo("", testUserInfo.getSurname());
-        verifyThatReturnedBackWithErrorAttribute(infoWithInvalidName);
+        verifyThatReturnedBackWithFieldErrorAttribute(infoWithInvalidName, "name");
     }
 
     @Test
     public void shouldReturnWithErrorIfSurnameIsInvalid() throws Exception {
         UserInfo infoWithInvalidSurname = new UserInfo(testUserInfo.getName(), "");
-        verifyThatReturnedBackWithErrorAttribute(infoWithInvalidSurname);
+        verifyThatReturnedBackWithFieldErrorAttribute(infoWithInvalidSurname, "surname");
     }
 
-    private void verifyThatReturnedBackWithErrorAttribute(UserInfo userInfo) throws Exception {
+    private void verifyThatReturnedBackWithFieldErrorAttribute(UserInfo userInfo, String fieldName) throws Exception {
         postUserInfoToEdit(userInfo)
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("userInfo", testUserInfo))
-                .andExpect(model().attributeExists("error"));
+                .andExpect(model().attributeHasFieldErrors("userInfoDto", fieldName));
     }
 
     private ResultActions postUserInfoToEdit(UserInfo userInfo) throws Exception {

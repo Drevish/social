@@ -52,18 +52,18 @@ public class SettingsController extends ControllerWithUserInfo {
     public String changePassword(@RequestParam String passwordOld, @ModelAttribute @Valid PasswordDto passwordNew,
                                  Errors errors, @RequestParam String passwordNewRepeat,
                                  Principal principal, Model model) {
-        if (errors.hasErrors()) {
-            model.addAttribute("error", errors.getAllErrors().get(0).getDefaultMessage());
-            return settingsView;
-        }
-
-        User user = userService.getUserByEmail(principal.getName());
         // verify that new password and repeated new password are equals
         if (passwordNew.getPassword() == null || !passwordNew.getPassword().equals(passwordNewRepeat)) {
             model.addAttribute("error", "New password and repeated password don't match!");
             return settingsView;
         }
 
+        if (errors.hasErrors()) {
+            model.addAttribute("error", errors.getAllErrors().get(0).getDefaultMessage());
+            return settingsView;
+        }
+
+        User user = userService.getUserByEmail(principal.getName());
         try {
             settingsService.changePassword(user, passwordOld, passwordNew.getPassword());
         } catch (InvalidPasswordException e) {
@@ -79,6 +79,7 @@ public class SettingsController extends ControllerWithUserInfo {
     public String changeEmail(@ModelAttribute @Valid EmailDto email, Errors errors, Principal principal, Model model) {
         if (errors.hasErrors()) {
             model.addAttribute("error", errors.getAllErrors().get(0).getDefaultMessage());
+            model.addAttribute("emailDto", emailDto(principal));
             return settingsView;
         }
 

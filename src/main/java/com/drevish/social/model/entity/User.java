@@ -18,15 +18,12 @@ import java.util.List;
 @Table(name = "users")
 public class User {
     @Id
-    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "email")
     @Email
     private String email;
 
-    @Column(name = "password")
     @Password
     private String password;
 
