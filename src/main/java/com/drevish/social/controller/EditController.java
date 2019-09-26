@@ -43,7 +43,7 @@ public class EditController extends ControllerWithUserInfo {
     @PostMapping
     public String update(@ModelAttribute @Valid UserInfoDto userInfoDto, Errors errors, Principal principal, Model model) {
         if (errors.hasErrors()) {
-            model.addAttribute("error", "Ivalid fields, please try again");
+            model.addAttribute("error", errors.getAllErrors().get(0).getDefaultMessage());
             return editView;
         }
 

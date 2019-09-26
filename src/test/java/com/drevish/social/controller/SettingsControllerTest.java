@@ -1,11 +1,7 @@
 package com.drevish.social.controller;
 
 import com.drevish.social.exception.InvalidPasswordException;
-import com.drevish.social.model.entity.User;
-import com.drevish.social.model.entity.UserInfo;
 import com.drevish.social.service.SettingsService;
-import com.drevish.social.service.UserInfoService;
-import com.drevish.social.service.UserService;
 import org.hamcrest.core.StringContains;
 import org.junit.Assert;
 import org.junit.Before;
@@ -18,11 +14,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.util.LinkedMultiValueMap;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import java.util.Collections;
-
+import static com.drevish.social.controller.ControllerTestUtils.testUser;
+import static com.drevish.social.controller.ControllerTestUtils.testUserInfo;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -33,38 +29,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @WithMockUser(username = "email@email.com")
-public class SettingsControllerTest {
+public class SettingsControllerTest extends ControllerTestWithUserAndUserInfo {
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
     private SettingsService settingsService;
 
-    @MockBean
-    private UserService userService;
-
-    @MockBean
-    private UserInfoService userInfoService;
-
-    private User testUser;
-    private UserInfo testUserInfo;
-
-    private ConstraintViolationException violationException;
+    private LinkedMultiValueMap<String, String> paramsMapForChangePasswordRequest;
+    private String oldPassword = testUser.getPassword();
+    private String newPassword = "newPassword";
 
     @Before
     public void before() {
-        testUser = User.builder()
-                .email("email@email.com")
-                .password("password")
-                .build();
-        testUserInfo = new UserInfo("name", "surname");
-
-        when(userService.getUserByEmail(testUser.getEmail())).thenReturn(testUser);
-        when(userInfoService.getUserInfoByEmail(testUser.getEmail())).thenReturn(testUserInfo);
-
-        ConstraintViolation<String> exampleViolation = mock(ConstraintViolation.class);
-        when(exampleViolation.getMessage()).thenReturn("");
-        violationException = new ConstraintViolationException(Collections.singleton(exampleViolation));
+        paramsMapForChangePasswordRequest = new LinkedMultiValueMap<>();
+        paramsMapForChangePasswordRequest.set("changed", "password");
+        paramsMapForChangePasswordRequest.set("passwordOld", oldPassword);
+        paramsMapForChangePasswordRequest.set("password", newPassword);
+        paramsMapForChangePasswordRequest.set("passwordNewRepeat", newPassword);
     }
 
     @Test
@@ -76,86 +58,84 @@ public class SettingsControllerTest {
     }
 
     @Test
-    public void shouldReturnWithErrorIfPasswordsDontMatch() throws Exception {
-        mockMvc.perform(post("/settings")
-                .with(csrf())
-                .param("changed", "password")
-                .param("passwordOld", "password")
-                .param("password", "password1")
-                .param("passwordNewRepeat", "password2"))
-                .andExpect(status().isOk())
-                .andExpect(model().attribute("userInfo", testUserInfo))
-                .andExpect(model().attributeExists("error"));
-    }
-
-    @Test
-    public void shouldReturnWithErrorIfOldPasswordIncorrect() throws Exception {
-        String password = "password";
-        doThrow(new InvalidPasswordException("")).when(settingsService)
-                .changePassword(testUser, password, password);
-        mockMvc.perform(post("/settings")
-                .with(csrf())
-                .param("changed", "password")
-                .param("passwordOld", password)
-                .param("password", password)
-                .param("passwordNewRepeat", password))
-                .andExpect(status().isOk())
-                .andExpect(model().attribute("userInfo", testUserInfo))
-                .andExpect(model().attributeExists("error"));
-    }
-
-    @Test
-    //TODO: add all invalidity types
-    public void shouldReturnWithErrorIfNewPasswordInvalid() throws Exception {
-        String invalidPassword = "q";
-        mockMvc.perform(post("/settings")
-                .with(csrf())
-                .param("changed", "password")
-                .param("passwordOld", "password")
-                .param("password", invalidPassword)
-                .param("passwordNewRepeat", invalidPassword))
-                .andExpect(status().isOk())
-                .andExpect(model().attribute("userInfo", testUserInfo))
-                .andExpect(model().attributeExists("error"));
-    }
-
-    @Test
     public void shouldCallChangePasswordAndNotChangePasswordByItself() throws Exception {
-        String oldPassword = testUser.getPassword();
-        String newPassword = "newPassword";
-        mockMvc.perform(post("/settings")
-                .with(csrf())
-                .param("changed", "password")
-                .param("passwordOld", oldPassword)
-                .param("password", newPassword)
-                .param("passwordNewRepeat", newPassword))
+        postChangePasswordToSettings()
                 .andExpect(redirectedUrl("/settings?success"));
         verify(settingsService, times(1)).changePassword(testUser, oldPassword, newPassword);
         Assert.assertEquals(oldPassword, testUser.getPassword());
     }
 
     @Test
-    public void shouldReturnWithErrorIfEmailIsNull() throws Exception {
-        String invalidEmail = "invalid";
-        mockMvc.perform(post("/settings")
+    public void shouldReturnWithErrorIfPasswordsDontMatch() throws Exception {
+        paramsMapForChangePasswordRequest.remove("passwordNewRepeat");
+        paramsMapForChangePasswordRequest.set("passwordNewRepeat", "another");
+        verifyThatReturnedBackWithErrorAttribute(postChangePasswordToSettings());
+    }
+
+    @Test
+    public void shouldReturnWithErrorIfOldPasswordIncorrect() throws Exception {
+        doThrow(new InvalidPasswordException("")).when(settingsService)
+                .changePassword(testUser, oldPassword, newPassword);
+        verifyThatReturnedBackWithErrorAttribute(postChangePasswordToSettings());
+    }
+
+    @Test
+    public void shouldReturnWithErrorIfNewPasswordIsNull() throws Exception {
+        paramsMapForChangePasswordRequest.remove("password");
+        verifyThatReturnedBackWithErrorAttribute(postChangePasswordToSettings());
+    }
+
+    @Test
+    public void shouldReturnWithErrorIfNewPasswordIsTooShort() throws Exception {
+        paramsMapForChangePasswordRequest.remove("password");
+        paramsMapForChangePasswordRequest.set("password", "q");
+        verifyThatReturnedBackWithErrorAttribute(postChangePasswordToSettings());
+    }
+
+    @Test
+    public void shouldReturnWithErrorIfNewPasswordDoesNotMatchPattern() throws Exception {
+        paramsMapForChangePasswordRequest.remove("password");
+        paramsMapForChangePasswordRequest.set("password", "пароль");
+        verifyThatReturnedBackWithErrorAttribute(postChangePasswordToSettings());
+    }
+
+    private ResultActions postChangePasswordToSettings() throws Exception {
+        return mockMvc.perform(post("/settings")
                 .with(csrf())
-                .param("changed", "email")
-                .param("email", invalidEmail))
-                .andExpect(status().isOk())
+                .params(paramsMapForChangePasswordRequest));
+    }
+
+    private ResultActions verifyThatReturnedBackWithErrorAttribute(ResultActions action) throws Exception {
+        return action.andExpect(status().isOk())
                 .andExpect(model().attribute("userInfo", testUserInfo))
                 .andExpect(model().attributeExists("error"));
+    }
+
+    @Test
+    public void shouldReturnWithErrorIfEmailIsNull() throws Exception {
+        verifyThatReturnedBackWithErrorAttribute(postChangeEmailToSettings(null));
+    }
+
+    @Test
+    public void shouldReturnWithErrorIfEmailIsInvalid() throws Exception {
+        verifyThatReturnedBackWithErrorAttribute(postChangeEmailToSettings("invalid"));
     }
 
     @Test
     public void shouldCallChangeEmailAndNotChangeEmailByItself() throws Exception {
         String emailBefore = testUser.getEmail();
         String newEmail = "newEmail@email.com";
-        mockMvc.perform(post("/settings")
-                .with(csrf())
-                .param("changed", "email")
-                .param("email", newEmail))
+        postChangeEmailToSettings(newEmail)
                 .andExpect(redirectedUrl("/settings?success"));
+
         verify(settingsService, times(1)).changeEmail(testUser, newEmail);
         Assert.assertEquals(emailBefore, testUser.getEmail());
+    }
+
+    private ResultActions postChangeEmailToSettings(String invalidEmail) throws Exception {
+        return mockMvc.perform(post("/settings")
+                .with(csrf())
+                .param("changed", "email")
+                .param("email", invalidEmail));
     }
 }
