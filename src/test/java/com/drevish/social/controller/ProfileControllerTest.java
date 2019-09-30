@@ -9,14 +9,17 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
-import static com.drevish.social.controller.ControllerTestUtils.testUser;
-import static com.drevish.social.controller.ControllerTestUtils.testUserInfo;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static com.drevish.social.TestUtils.testUser;
+import static com.drevish.social.TestUtils.testUserInfo;
+import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
@@ -29,9 +32,13 @@ public class ProfileControllerTest extends ControllerTestWithUserAndUserInfo {
 
     @Test
     public void shouldShowOwnProfilePage() throws Exception {
-        mockMvc.perform(get("/profile"))
-                .andExpect(status().isOk())
-                .andExpect(model().attribute("userInfo", testUserInfo))
+        ResultActions resultActions = mockMvc.perform(get("/profile"))
+                .andExpect(status().isOk());
+        verifyProfilePageModelAttributes(resultActions);
+    }
+
+    private ResultActions verifyProfilePageModelAttributes(ResultActions actions) throws Exception {
+        return actions.andExpect(model().attribute("userInfo", testUserInfo))
                 .andExpect(content().string(StringContains.containsString(testUserInfo.getName())))
                 .andExpect(content().string(StringContains.containsString(testUserInfo.getSurname())))
                 .andExpect(content().string(StringContains.containsString(testUser.getEmail())));
@@ -66,5 +73,28 @@ public class ProfileControllerTest extends ControllerTestWithUserAndUserInfo {
         when(userService.getUserById(0L)).thenThrow(new UserNotFoundException(""));
         mockMvc.perform(get("/profile/id{id}", 0L))
                 .andExpect(redirectedUrl("/profile"));
+    }
+
+    @Test
+    public void shouldUploadImage() throws Exception {
+        MockMultipartFile file = new MockMultipartFile("image", "image.png", "image/PNG", "data".getBytes());
+        ResultActions actions = mockMvc.perform(multipart("/profile")
+                .file(file)
+                .with(csrf())
+                .param("change", "upload-image"))
+                .andExpect(status().isOk());
+        verifyProfilePageModelAttributes(actions);
+        verify(userInfoService, times(1)).setImage(file, testUserInfo);
+    }
+
+
+    @Test
+    public void shouldDeleteImage() throws Exception {
+        ResultActions actions = mockMvc.perform(post("/profile")
+                .with(csrf())
+                .param("change", "delete-image"))
+                .andExpect(status().isOk());
+        verifyProfilePageModelAttributes(actions);
+        verify(userInfoService, times(1)).deleteImage(testUserInfo);
     }
 }

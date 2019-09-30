@@ -1,11 +1,11 @@
-package com.drevish.social.controller;
+package com.drevish.social;
 
 import com.drevish.social.model.entity.User;
 import com.drevish.social.model.entity.UserInfo;
 
 import java.util.ArrayList;
 
-public interface ControllerTestUtils {
+public interface TestUtils {
     User testUser = User.builder()
             .id(1L)
             .email("email@email.com")

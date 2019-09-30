@@ -17,8 +17,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.util.LinkedMultiValueMap;
 
-import static com.drevish.social.controller.ControllerTestUtils.testUser;
-import static com.drevish.social.controller.ControllerTestUtils.testUserInfo;
+import static com.drevish.social.TestUtils.testUser;
+import static com.drevish.social.TestUtils.testUserInfo;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

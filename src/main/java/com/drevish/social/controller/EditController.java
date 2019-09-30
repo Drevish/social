@@ -46,7 +46,7 @@ public class EditController extends ControllerWithUserInfo {
         }
 
         User user = userService.getUserByEmail(principal.getName());
-        userInfoService.saveForUser(userInfoDto.assemble(), user);
+        userInfoService.updateNameAndSurname(userInfoDto, user);
 
         log.info("User with email" + user.getEmail() + " changed info");
         return "redirect:" + editPath + "?success";

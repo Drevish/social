@@ -1,5 +1,6 @@
 package com.drevish.social.controller;
 
+import com.drevish.social.controller.dto.UserInfoDto;
 import com.drevish.social.model.entity.UserInfo;
 import org.hamcrest.core.StringContains;
 import org.junit.Assert;
@@ -13,8 +14,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import static com.drevish.social.controller.ControllerTestUtils.testUser;
-import static com.drevish.social.controller.ControllerTestUtils.testUserInfo;
+import static com.drevish.social.TestUtils.testUser;
+import static com.drevish.social.TestUtils.testUserInfo;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -46,7 +47,9 @@ public class EditControllerTest extends ControllerTestWithUserAndUserInfo {
         postUserInfoToEdit(newUserInfo)
                 .andExpect(redirectedUrl("/edit?success"));
 
-        verify(userInfoService, times(1)).saveForUser(newUserInfo, testUser);
+        verify(userInfoService, times(1)).updateNameAndSurname(
+                UserInfoDto.assemble(newUserInfo), testUser
+        );
         Assert.assertEquals(testUserInfo.getName(), beforePost.getName());
         Assert.assertEquals(testUserInfo.getSurname(), beforePost.getSurname());
     }

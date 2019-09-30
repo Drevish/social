@@ -7,10 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.MapsId;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 @Data
 @NoArgsConstructor
@@ -29,6 +26,16 @@ public class UserInfo {
 
     @Surname
     private String surname;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private File image;
+
+    public UserInfo(Long id, User user, @Name String name, @Surname String surname) {
+        this.id = id;
+        this.user = user;
+        this.name = name;
+        this.surname = surname;
+    }
 
     public UserInfo(@Name String name, @Surname String surname) {
         this.name = name;
