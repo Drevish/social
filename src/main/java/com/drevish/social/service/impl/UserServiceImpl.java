@@ -45,8 +45,11 @@ public class UserServiceImpl implements UserService {
 
         User user = assembleUserFromRegistrationInfo(registrationInfo);
         userRepository.save(user);
+
         UserInfo userInfo = new UserInfo(registrationInfo.getName(), registrationInfo.getSurname());
-        infoService.saveForUser(userInfo, user);
+        userInfo.setId(user.getId());
+        userInfo.setUser(user);
+        infoService.save(userInfo);
     }
 
     private User assembleUserFromRegistrationInfo(UserRegistrationInfo info) {

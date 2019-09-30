@@ -75,7 +75,8 @@ public class UserServiceImplTest {
         UserInfo expectedInfo = new UserInfo(registrationInfo.getName(), registrationInfo.getSurname());
         service.register(registrationInfo);
         verify(repository, times(1)).save(expectedUser);
-        verify(userInfoService, times(1)).saveForUser(expectedInfo, expectedUser);
+        expectedInfo.setUser(expectedUser);
+        verify(userInfoService, times(1)).save(expectedInfo);
     }
 
     @Test(expected = UserNotFoundException.class)

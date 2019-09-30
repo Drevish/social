@@ -1,5 +1,6 @@
 package com.drevish.social.controller;
 
+import com.drevish.social.exception.InvalidImageException;
 import com.drevish.social.exception.UserNotFoundException;
 import com.drevish.social.model.entity.User;
 import com.drevish.social.model.entity.UserInfo;
@@ -9,9 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 
@@ -53,6 +53,24 @@ public class ProfileController extends ControllerWithUserInfo {
 
         UserInfo userInfo = userInfoService.getUserInfoByEmail(user.getEmail());
         model.addAttribute("userInfo", userInfo);
+
         return otherProfileView;
+    }
+
+    @PostMapping(params = "change=upload-image")
+    public String updateImage(@RequestParam MultipartFile image, Principal principal, Model model) {
+        try {
+            userInfoService.setImage(image, userInfo(principal));
+        } catch (InvalidImageException e) {
+            log.warn(e.toString());
+        }
+        return showOwnProfile(principal, model);
+    }
+
+    @PostMapping(params = "change=delete-image")
+    public String deleteImage(Principal principal, Model model) {
+        UserInfo userInfo = userInfo(principal);
+        userInfoService.deleteImage(userInfo);
+        return showOwnProfile(principal, model);
     }
 }
