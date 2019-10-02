@@ -12,14 +12,29 @@
 
 <main>
     <div class="container">
-        <div class="row">
-            <div class="col-3" th:insert="/fragments/side-menu :: side-menu"></div>
-            <div class="col-9">
-                <div class="content">
-                    <h3>This is the page of <span th:text="${userInfo.name}"></span> <span
-                            th:text="${userInfo.surname}"></span>!</h3>
 
-                    <a th:href="#{path.profile}">Back to own profile</a>
+        <div class="row">
+            <div class="col-3" th:insert="/fragments/side-menu :: side-menu">
+            </div>
+            <div class="col-9">
+                <div class="row">
+                    <div class="col-4">
+                        <div class="profile-image">
+                            <img alt="" th:if="${otherUserInfo.image != null}"
+                                 th:src="${'/file/' + otherUserInfo.image.id}">
+                            <img alt="" th:if="${otherUserInfo.image == null}"
+                                 th:src="@{/image/profileImage/default.png}">
+                        </div>
+                    </div>
+                    <div class="col-8">
+                        <div class="content">
+                            <h1>This is the page of
+                                <span th:text="${otherUserInfo.name}"></span>
+                                <span th:text="${otherUserInfo.surname}"></span>!
+                            </h1>
+                            <a th:href="#{path.profile}">Back to own profile</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

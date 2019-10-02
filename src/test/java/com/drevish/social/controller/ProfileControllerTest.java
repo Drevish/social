@@ -56,7 +56,8 @@ public class ProfileControllerTest extends ControllerTestWithUserAndUserInfo {
 
         mockMvc.perform(get("/profile/id{id}", anotherUser.getId()))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("userInfo", anotherUserInfo))
+                .andExpect(model().attribute("userInfo", testUserInfo))
+                .andExpect(model().attribute("otherUserInfo", anotherUserInfo))
                 .andExpect(content().string(StringContains.containsString(anotherUserInfo.getName())))
                 .andExpect(content().string(StringContains.containsString(anotherUserInfo.getSurname())));
     }
