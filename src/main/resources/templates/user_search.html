@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${userInfo.name + ' ' + userInfo.surname}"></title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/core.css}">
+    <link rel="stylesheet" th:href="@{/css/user_search.css}">
+</head>
+<body>
+
+<div class="header" th:replace="/fragments/header :: header"></div>
+
+<main>
+    <div class="container">
+
+        <div class="row">
+            <div class="col-3" th:insert="/fragments/side-menu :: side-menu">
+            </div>
+            <div class="col-9">
+                <div class="profiles">
+                    <h3 class="profiles-caption">
+                        Users found by search "<span th:text="${param.q}"></span>"
+                    </h3>
+                    <div class="profile-description container-fluid" th:each="user: ${users}">
+                        <div class="row">
+                            <div class="col-2">
+                                <a target="_blank" th:href="${'/profile/id' + user.id}">
+                                    <img class="profile-description-image" th:if="${user.image != null}"
+                                         th:src="${'/file/' + user.image.id}">
+                                    <img class="profile-description-image" th:if="${user.image == null}"
+                                         th:src="@{/image/profileImage/default.png}">
+                                </a>
+                            </div>
+
+                            <div class="col-10">
+                                <a target="_blank" th:href="${'/profile/id' + user.id}">
+                                    <div th:text="${user.name + ' ' + user.surname}"></div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script th:src="@{/js/jquery-3.4.1.min.js}"></script>
+<script th:src="@{/js/popper.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+
+</body>
+</html>

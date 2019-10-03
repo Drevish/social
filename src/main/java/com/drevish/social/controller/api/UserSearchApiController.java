@@ -1,6 +1,6 @@
-package com.drevish.social.controller.rest;
+package com.drevish.social.controller.api;
 
-import com.drevish.social.controller.dto.UserSearchDto;
+import com.drevish.social.controller.api.dto.UserSearchApiDto;
 import com.drevish.social.service.UserSearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,16 +12,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/search/user")
-public class UserSearchController {
+@RequestMapping("api/search/user")
+public class UserSearchApiController {
     @Autowired
     private UserSearchService userSearchService;
 
     @GetMapping("/{nameOrSurname}")
-    public List<UserSearchDto> findUsersByNameOrSurname(@PathVariable String nameOrSurname) {
+    public List<UserSearchApiDto> findUsersByNameOrSurname(@PathVariable String nameOrSurname) {
         return userSearchService.findAllByNameOrSurname(nameOrSurname)
                 .stream()
-                .map(UserSearchDto::assemble)
+                .map(UserSearchApiDto::assemble)
                 .collect(Collectors.toList());
     }
 }

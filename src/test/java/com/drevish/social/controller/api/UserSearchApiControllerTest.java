@@ -1,5 +1,6 @@
-package com.drevish.social.controller.rest;
+package com.drevish.social.controller.api;
 
+import com.drevish.social.model.entity.File;
 import com.drevish.social.model.entity.UserInfo;
 import com.drevish.social.service.UserSearchService;
 import org.junit.Test;
@@ -24,10 +25,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(controllers = UserSearchController.class)
+@WebMvcTest(controllers = UserSearchApiController.class)
 @AutoConfigureMockMvc
 @WithMockUser(username = "email@email.com")
-public class UserSearchControllerTest {
+public class UserSearchApiControllerTest {
     @MockBean
     private UserSearchService userSearchService;
 
@@ -38,18 +39,20 @@ public class UserSearchControllerTest {
     public void shouldReturnFoundAndMapped() throws Exception {
         UserInfo user1 = new UserInfo("name1", "surname1");
         user1.setId(1L);
+        user1.setImage(new File("img1", "", new byte[]{}));
         UserInfo user2 = new UserInfo("name2", "surname2");
         user2.setId(5L);
+        user2.setImage(new File("img2", "", new byte[]{}));
         List<UserInfo> allUsers = Arrays.asList(user1, user2);
         when(userSearchService.findAllByNameOrSurname("v")).thenReturn(allUsers);
 
-        mockMvc.perform(get("/search/user/{nameOrSurname}", "v")
-                .accept(MediaType.APPLICATION_JSON_VALUE))
+        mockMvc.perform(get("/api/search/user/{nameOrSurname}", "v"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].id", is(1)))
                 .andExpect(jsonPath("$[0].name", is(user1.getName())))
+                .andExpect(jsonPath("$[0].surname", is(user1.getSurname())))
                 .andExpect(jsonPath("$[0].surname", is(user1.getSurname())))
                 .andExpect(jsonPath("$[1].id", is(5)))
                 .andExpect(jsonPath("$[1].name", is(user2.getName())))

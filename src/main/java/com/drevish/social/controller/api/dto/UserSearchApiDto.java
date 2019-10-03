@@ -1,8 +1,7 @@
-package com.drevish.social.controller.dto;
+package com.drevish.social.controller.api.dto;
 
 import com.drevish.social.anno.Name;
 import com.drevish.social.anno.Surname;
-import com.drevish.social.model.entity.File;
 import com.drevish.social.model.entity.UserInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserSearchDto {
+public class UserSearchApiDto {
     private Long id;
 
     @Name
@@ -20,9 +19,7 @@ public class UserSearchDto {
     @Surname
     private String surname;
 
-    private File image;
-
-    public static UserSearchDto assemble(UserInfo userInfo) {
-        return new UserSearchDto(userInfo.getId(), userInfo.getName(), userInfo.getSurname(), userInfo.getImage());
+    public static UserSearchApiDto assemble(UserInfo userInfo) {
+        return new UserSearchApiDto(userInfo.getId(), userInfo.getName(), userInfo.getSurname());
     }
 }
