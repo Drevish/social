@@ -10,9 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class ChatServiceImpl implements ChatService {
@@ -23,14 +24,18 @@ public class ChatServiceImpl implements ChatService {
     private MessageRepository messageRepository;
 
     @Override
-    public Chat openNewOrGetExisting(User user1, User user2) {
-        List<User> users = Arrays.asList(user1, user2);
-        System.err.println(users);
-        Optional<Chat> optionalChat = chatRepository.findByUsers(Arrays.asList(users));
-        if (optionalChat.isPresent()) {
-            return optionalChat.get();
+    public Chat openNewOrGetExistingDialogue(User user1, User user2) {
+        List<Chat> allChatsWithUser1 = chatRepository.findAllByUsersIsIn(user1);
+        Optional<Chat> dialogue = allChatsWithUser1.stream().
+                filter(c -> c.getUsers().size() == 2)
+                .filter(c -> c.getUsers().stream()
+                        .anyMatch(u -> u.getId().equals(user2.getId())))
+                .findFirst();
+
+        if (dialogue.isPresent()) {
+            return dialogue.get();
         } else {
-            Chat chat = new Chat(Arrays.asList(user1, user2));
+            Chat chat = new Chat(Stream.of(user1, user2).collect(Collectors.toSet()));
             chatRepository.save(chat);
             return chat;
         }
