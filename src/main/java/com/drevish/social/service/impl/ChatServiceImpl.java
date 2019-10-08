@@ -24,6 +24,11 @@ public class ChatServiceImpl implements ChatService {
     private MessageRepository messageRepository;
 
     @Override
+    public List<Chat> getAllForUser(User user) {
+        return chatRepository.findAllByUsersIsIn(user);
+    }
+
+    @Override
     public Chat openNewOrGetExistingDialogue(User user1, User user2) {
         List<Chat> allChatsWithUser1 = chatRepository.findAllByUsersIsIn(user1);
         Optional<Chat> dialogue = allChatsWithUser1.stream().

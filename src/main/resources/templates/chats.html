@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chats</title>
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/core.css}">
+
+    <style>
+        img {
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header" th:replace="/fragments/header :: header"></div>
+
+<main>
+    <div class="container">
+        <div class="row">
+            <div class="col-3" th:insert="/fragments/side-menu :: side-menu">
+            </div>
+            <div class="col-9">
+                <h1>Chats</h1>
+                <div th:each="chat: ${chats}">
+                    <div th:if="${chat.users.size() == 2}"
+                         th:with="users=${chat.users.toArray()},
+                          otherUser=${users[0] == user ? users[1] : users[0]},
+                            info=${userInfos.get(otherUser.id)}">
+                        <div class="row">
+                            <div class="col-2">
+                                <a target="_blank" th:href="${'/profile/id' + otherUser.id}">
+                                    <img th:if="${info.image != null}"
+                                         th:src="${'/file/' + info.image.id}">
+                                    <img th:if="${info.image == null}"
+                                         th:src="@{/image/profileImage/default.png}">
+                                </a>
+                            </div>
+
+                            <div class="col-10">
+                                <div th:text="${info.name + ' ' + info.surname}"></div>
+                                <div>...last message...</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div th:if="${chat.users.size() == 1}">
+                        <!-- Self-dialog -->
+                    </div>
+                    <div th:if="${chat.users.size() > 2}">
+                        <!-- Group chat -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script th:src="@{/js/jquery-3.4.1.min.js}"></script>
+<script th:src="@{/js/popper.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+
+</body>
+</html>

@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -64,6 +65,15 @@ public class ChatServiceImplTest {
         chatService.sendMessage(chat, user1, "text");
         Message message = new Message(user1, "text", chat, LocalDate.now());
         verify(messageRepository, times(1)).save(message);
+    }
+
+    @Test
+    public void shouldDelegateFindAllToRepository() {
+        when(chatRepository.findAllByUsersIsIn(user1)).thenReturn(Collections.singletonList(chat));
+        List<Chat> resultList = chatService.getAllForUser(user1);
+        assertEquals(Collections.singletonList(chat), resultList);
+        verify(chatRepository, times(1)).findAllByUsersIsIn(user1);
+        verifyNoMoreInteractions(chatRepository);
     }
 
     @TestConfiguration
