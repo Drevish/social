@@ -19,6 +19,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/chat")
+//TODO: test
 public class ChatController extends ControllerWithUserInfo {
     @Value("${view.chats_all}")
     private String chatsView;
@@ -35,7 +36,11 @@ public class ChatController extends ControllerWithUserInfo {
         List<Chat> chats = chatService.getAllForUser(user);
         model.addAttribute("chats", chats);
         model.addAttribute("user", user);
+        model.addAttribute("userInfos", buildUserIdUserInfoMap(user, chats));
+        return chatsView;
+    }
 
+    private Map<Long, UserInfo> buildUserIdUserInfoMap(User user, List<Chat> chats) {
         Map<Long, UserInfo> userInfosForDialogues = new HashMap<>();
         chats.stream()
                 .filter(c -> c.getUsers().size() == 2)
@@ -43,7 +48,6 @@ public class ChatController extends ControllerWithUserInfo {
                         .filter(u -> !u.equals(user))
                         .forEach(u -> userInfosForDialogues.put(u.getId(),
                                 userInfoService.getUserInfoByEmail(u.getEmail()))));
-        model.addAttribute("userInfos", userInfosForDialogues);
-        return chatsView;
+        return userInfosForDialogues;
     }
 }
