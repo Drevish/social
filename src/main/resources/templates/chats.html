@@ -43,8 +43,8 @@
                             <div class="col-10">
                                 <a th:href="#{path.chat} + '/' + ${chat.id}">
                                     <div th:text="${info.name + ' ' + info.surname}"></div>
-                                    <div th:text="${chat.messages.get(chat.messages.size()-1).text}">...last
-                                        message...
+                                    <div th:if="${chat.messages != null && chat.messages.size() > 0}"
+                                         th:text="${chat.messages.get(chat.messages.size()-1).text}">
                                     </div>
                                 </a>
                             </div>

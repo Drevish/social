@@ -22,7 +22,6 @@ import java.util.Map;
 @Slf4j
 @Controller
 @RequestMapping("/chat")
-//TODO: test
 public class ChatController extends ControllerWithUserInfo {
     @Value("${path.chat}")
     private String chatsPath;
