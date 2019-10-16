@@ -1,5 +1,6 @@
 package com.drevish.social.controller;
 
+import com.drevish.social.config.CustomAccessDeniedHandler;
 import com.drevish.social.controller.dto.UserRegistrationInfo;
 import com.drevish.social.exception.UserExistsException;
 import com.drevish.social.service.UserService;
@@ -23,7 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(controllers = RegistrationController.class)
+@WebMvcTest(controllers = {RegistrationController.class, CustomAccessDeniedHandler.class})
 @AutoConfigureMockMvc
 public class RegistrationControllerTest {
 

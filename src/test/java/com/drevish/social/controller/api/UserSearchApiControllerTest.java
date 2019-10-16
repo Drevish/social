@@ -1,5 +1,6 @@
 package com.drevish.social.controller.api;
 
+import com.drevish.social.config.CustomAccessDeniedHandler;
 import com.drevish.social.model.entity.File;
 import com.drevish.social.model.entity.UserInfo;
 import com.drevish.social.service.UserSearchService;
@@ -25,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(controllers = UserSearchApiController.class)
+@WebMvcTest(controllers = {UserSearchApiController.class, CustomAccessDeniedHandler.class})
 @AutoConfigureMockMvc
 @WithMockUser(username = "email@email.com")
 public class UserSearchApiControllerTest {

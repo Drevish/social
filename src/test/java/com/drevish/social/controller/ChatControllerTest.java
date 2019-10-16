@@ -1,5 +1,7 @@
 package com.drevish.social.controller;
 
+import com.drevish.social.config.CustomAccessDeniedHandler;
+import com.drevish.social.config.WebSecurity;
 import com.drevish.social.exception.ChatNotFoundException;
 import com.drevish.social.model.entity.Chat;
 import com.drevish.social.model.entity.File;
@@ -31,9 +33,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(controllers = ChatController.class)
+@WebMvcTest(controllers = {ChatController.class, CustomAccessDeniedHandler.class, WebSecurity.class})
 @AutoConfigureMockMvc
-@WithMockUser(username = "email@email.com")
+@WithMockUser(username = "email@email.com", authorities = "CHAT_1")
 public class ChatControllerTest extends ControllerTestWithUserAndUserInfo {
     @Autowired
     private MockMvc mockMvc;

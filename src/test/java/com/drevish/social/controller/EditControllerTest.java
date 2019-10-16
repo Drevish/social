@@ -1,5 +1,6 @@
 package com.drevish.social.controller;
 
+import com.drevish.social.config.CustomAccessDeniedHandler;
 import com.drevish.social.controller.dto.UserInfoDto;
 import com.drevish.social.model.entity.UserInfo;
 import org.hamcrest.core.StringContains;
@@ -24,7 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(controllers = EditController.class)
+@WebMvcTest(controllers = {EditController.class, CustomAccessDeniedHandler.class})
 @AutoConfigureMockMvc
 @WithMockUser(username = "email@email.com")
 public class EditControllerTest extends ControllerTestWithUserAndUserInfo {
