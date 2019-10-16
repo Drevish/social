@@ -38,6 +38,7 @@ public class ProfileController extends ControllerWithUserInfo {
     }
 
     @GetMapping("/id{userId}")
+    //TODO: add create a chat with this user button
     public String showUserProfile(@PathVariable Long userId, Principal principal, Model model) {
         User user;
         try {

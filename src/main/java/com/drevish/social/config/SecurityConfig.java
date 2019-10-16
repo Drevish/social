@@ -33,6 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     //TODO: add security for chats
+    //TODO: test security for chats
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .headers()

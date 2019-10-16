@@ -1,10 +1,12 @@
 package com.drevish.social.controller;
 
+import com.drevish.social.exception.ChatNotFoundException;
 import com.drevish.social.model.entity.Chat;
 import com.drevish.social.model.entity.User;
 import com.drevish.social.model.entity.UserInfo;
 import com.drevish.social.service.ChatService;
 import com.drevish.social.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -17,10 +19,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Controller
 @RequestMapping("/chat")
 //TODO: test
 public class ChatController extends ControllerWithUserInfo {
+    @Value("${path.chat}")
+    private String chatsPath;
+
     @Value("${view.chats_all}")
     private String chatsView;
 
@@ -56,19 +62,27 @@ public class ChatController extends ControllerWithUserInfo {
 
     @GetMapping("/{id}")
     public String showChat(@PathVariable Long id, Principal principal, Model model) {
-        //TODO: check not found exception
-        Chat chat = chatService.getById(id);
-        model.addAttribute("chat", chat);
-        User user = userService.getUserByEmail(principal.getName());
-        model.addAttribute("user", user);
-        model.addAttribute("userInfos", buildUserIdUserInfoMap(user, Collections.singletonList(chat)));
-        return chatView;
+        try {
+            Chat chat = chatService.getById(id);
+            model.addAttribute("chat", chat);
+            User user = userService.getUserByEmail(principal.getName());
+            model.addAttribute("user", user);
+            model.addAttribute("userInfos", buildUserIdUserInfoMap(user, Collections.singletonList(chat)));
+            return chatView;
+        } catch (ChatNotFoundException e) {
+            log.warn(e.toString());
+            return "redirect:" + chatsPath;
+        }
     }
 
     @PostMapping("/{id}/send")
     public String sendMessage(@PathVariable Long id, @RequestParam String text, Principal principal) {
-        //TODO: check not found exception
-        chatService.sendMessage(chatService.getById(id), userService.getUserByEmail(principal.getName()), text);
-        return "redirect:/chat/" + id;
+        try {
+            chatService.sendMessage(chatService.getById(id), userService.getUserByEmail(principal.getName()), text);
+            return "redirect:/chat/" + id;
+        } catch (ChatNotFoundException e) {
+            log.warn(e.toString());
+            return "redirect:" + chatsPath;
+        }
     }
 }

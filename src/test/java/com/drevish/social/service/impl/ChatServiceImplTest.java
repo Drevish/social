@@ -2,7 +2,6 @@ package com.drevish.social.service.impl;
 
 import com.drevish.social.exception.ChatNotFoundException;
 import com.drevish.social.model.entity.Chat;
-import com.drevish.social.model.entity.Message;
 import com.drevish.social.model.entity.Role;
 import com.drevish.social.model.entity.User;
 import com.drevish.social.model.repository.ChatRepository;
@@ -19,7 +18,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -97,8 +96,10 @@ public class ChatServiceImplTest {
     @Test
     public void shouldSendMessage() {
         chatService.sendMessage(chat, user1, "text");
-        Message message = new Message(user1, "text", chat, LocalDate.now());
-        verify(messageRepository, times(1)).save(message);
+        LocalDateTime now = LocalDateTime.now();
+        verify(messageRepository, times(1)).save(argThat(m ->
+                m.getSendDate().isAfter(now.minusSeconds(1)) &&
+                        m.getSendDate().isBefore(now.plusSeconds(1))));
     }
 
     @Test

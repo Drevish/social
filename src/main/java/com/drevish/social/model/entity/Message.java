@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -23,9 +23,9 @@ public class Message {
     @JoinColumn(name = "chat_id")
     private Chat chat;
 
-    private LocalDate sendDate;
+    private LocalDateTime sendDate;
 
-    public Message(User sender, String text, Chat chat, LocalDate sendDate) {
+    public Message(User sender, String text, Chat chat, LocalDateTime sendDate) {
         this.sender = sender;
         this.text = text;
         this.chat = chat;

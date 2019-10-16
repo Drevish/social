@@ -18,7 +18,7 @@
 
 <div class="header" th:replace="/fragments/header :: header"></div>
 
-<!-- TODO: beautify and add message date, add navigation between chat, chats and profile, tests for controller, security     -->
+<!-- TODO: beautify and add message date, add navigation between chat, chats and profile -->
 <main>
     <div class="container">
         <div class="row">
@@ -54,6 +54,7 @@
                             <td>Photo</td>
                             <td>Name</td>
                             <td>Text</td>
+                            <td>Time</td>
                         </tr>
                         </thead>
                         <tbody>
@@ -67,6 +68,7 @@
                                 </td>
                                 <td th:text="${info.name}"></td>
                                 <td th:text="${message.text}"></td>
+                                <td th:text="${message.sendDate}"></td>
                             </th:block>
                             <th:block th:if="${message.sender == user}">
                                 <td>
@@ -77,6 +79,7 @@
                                 </td>
                                 <td th:text="${userInfo.name}"></td>
                                 <td th:text="${message.text}"></td>
+                                <td th:text="${message.sendDate}"></td>
                             </th:block>
                         </tr>
                         </tbody>

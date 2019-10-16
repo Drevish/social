@@ -13,7 +13,7 @@ import com.drevish.social.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -79,7 +79,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public void sendMessage(Chat chat, User sender, String text) {
-        Message message = new Message(sender, text, chat, LocalDate.now());
+        Message message = new Message(sender, text, chat, LocalDateTime.now());
         messageRepository.save(message);
     }
 }
