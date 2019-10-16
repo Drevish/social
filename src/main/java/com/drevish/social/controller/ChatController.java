@@ -9,10 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +23,9 @@ import java.util.Map;
 public class ChatController extends ControllerWithUserInfo {
     @Value("${view.chats_all}")
     private String chatsView;
+
+    @Value("${view.chat}")
+    private String chatView;
 
     @Autowired
     private ChatService chatService;
@@ -49,5 +52,23 @@ public class ChatController extends ControllerWithUserInfo {
                         .forEach(u -> userInfosForDialogues.put(u.getId(),
                                 userInfoService.getUserInfoByEmail(u.getEmail()))));
         return userInfosForDialogues;
+    }
+
+    @GetMapping("/{id}")
+    public String showChat(@PathVariable Long id, Principal principal, Model model) {
+        //TODO: check not found exception
+        Chat chat = chatService.getById(id);
+        model.addAttribute("chat", chat);
+        User user = userService.getUserByEmail(principal.getName());
+        model.addAttribute("user", user);
+        model.addAttribute("userInfos", buildUserIdUserInfoMap(user, Collections.singletonList(chat)));
+        return chatView;
+    }
+
+    @PostMapping("/{id}/send")
+    public String sendMessage(@PathVariable Long id, @RequestParam String text, Principal principal) {
+        //TODO: check not found exception
+        chatService.sendMessage(chatService.getById(id), userService.getUserByEmail(principal.getName()), text);
+        return "redirect:/chat/" + id;
     }
 }

@@ -1,5 +1,6 @@
 package com.drevish.social.service.impl;
 
+import com.drevish.social.exception.ChatNotFoundException;
 import com.drevish.social.model.entity.Chat;
 import com.drevish.social.model.entity.Message;
 import com.drevish.social.model.entity.Role;
@@ -67,6 +68,13 @@ public class ChatServiceImpl implements ChatService {
                     u.getRoles().add(role);
                     userRepository.save(u);
                 });
+    }
+
+    @Override
+    public Chat getById(Long id) {
+        return chatRepository.findById(id).orElseThrow(
+                () -> new ChatNotFoundException("No chat found with id " + id)
+        );
     }
 
     @Override

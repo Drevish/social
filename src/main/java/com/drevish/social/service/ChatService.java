@@ -10,5 +10,7 @@ public interface ChatService {
 
     Chat openNewOrGetExistingDialogue(User user1, User user2);
 
+    Chat getById(Long id);
+
     void sendMessage(Chat chat, User sender, String text);
 }

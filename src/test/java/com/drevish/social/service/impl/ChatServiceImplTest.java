@@ -1,5 +1,6 @@
 package com.drevish.social.service.impl;
 
+import com.drevish.social.exception.ChatNotFoundException;
 import com.drevish.social.model.entity.Chat;
 import com.drevish.social.model.entity.Message;
 import com.drevish.social.model.entity.Role;
@@ -107,6 +108,21 @@ public class ChatServiceImplTest {
         assertEquals(Collections.singletonList(chat), resultList);
         verify(chatRepository, times(1)).findAllByUsersIsIn(user1);
         verifyNoMoreInteractions(chatRepository);
+    }
+
+    @Test
+    public void shouldReturnById() {
+        when(chatRepository.findById(chat.getId())).thenReturn(Optional.of(chat));
+        Chat result = chatService.getById(chat.getId());
+        assertEquals(chat, result);
+        verify(chatRepository, times(1)).findById(chat.getId());
+        verifyNoMoreInteractions(chatRepository);
+    }
+
+    @Test(expected = ChatNotFoundException.class)
+    public void shouldThrowChatNotFoundException() {
+        when(chatRepository.findById(chat.getId())).thenReturn(Optional.empty());
+        chatService.getById(chat.getId());
     }
 
     @TestConfiguration
