@@ -102,4 +102,15 @@ public class ChatControllerTest extends ControllerTestWithUserAndUserInfo {
                 .param("text", "message"))
                 .andExpect(redirectedUrl("/chat"));
     }
+
+    @Test
+    @WithMockUser(username = "email@email.com")
+    public void shouldReturnAllChatsIfHasNoChatAuthority() throws Exception {
+        mockMvc.perform(get("/chat/{id}", 1))
+                .andExpect(redirectedUrl("/chat"));
+        mockMvc.perform(post("/chat/{id}/send", 1)
+                .with(csrf())
+                .param("text", "message"))
+                .andExpect(redirectedUrl("/chat"));
+    }
 }

@@ -36,7 +36,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    //TODO: test security for chats
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .headers()
@@ -46,7 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/css/**", "/js/**").permitAll()
                 .antMatchers("/", "/register").permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/chat/{chatId}")
+                .antMatchers("/chat/{chatId}", "/chat/{chatId}/send")
                 .access("isAuthenticated() && @webSecurity.hasChatPermission(authentication, #chatId)")
                 .anyRequest().authenticated()
                 .and()
