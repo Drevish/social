@@ -10,6 +10,7 @@ import com.drevish.social.model.repository.MessageRepository;
 import com.drevish.social.model.repository.RoleRepository;
 import com.drevish.social.model.repository.UserRepository;
 import com.drevish.social.service.ChatService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
+@Slf4j
 public class ChatServiceImpl implements ChatService {
     @Autowired
     private ChatRepository chatRepository;

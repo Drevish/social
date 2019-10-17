@@ -32,6 +32,10 @@
                                 <span th:text="${otherUserInfo.name}"></span>
                                 <span th:text="${otherUserInfo.surname}"></span>!
                             </h1>
+                            <form method="post" th:action="${'/chat/' + otherUserInfo.id + '/open'}">
+                                <input hidden name="id" th:value="${otherUserInfo.id}" type="text">
+                                <button class="btn btn-dark" th:type="submit">Open chat</button>
+                            </form>
                             <a th:href="#{path.profile}">Back to own profile</a>
                         </div>
                     </div>

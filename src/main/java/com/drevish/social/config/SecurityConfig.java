@@ -47,6 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/chat/{chatId}", "/chat/{chatId}/send")
                 .access("isAuthenticated() && @webSecurity.hasChatPermission(authentication, #chatId)")
+                .antMatchers("/chat/{userId}/open").authenticated()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
