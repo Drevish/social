@@ -1,0 +1,29 @@
+.profiles {
+  margin-top: 10px;
+
+  .profiles-caption {
+    margin-bottom: 20px;
+  }
+
+  .profile-description {
+    border-bottom: 1px solid lightgray;
+
+    .row {
+      padding: 5px;
+
+      &:not(:last-child) {
+        border-bottom: none;
+      }
+
+      [class^=col] {
+        margin: 0;
+        padding: 0;
+      }
+
+      .profile-description-image {
+        width: 100px;
+        height: 100px;
+      }
+    }
+  }
+}

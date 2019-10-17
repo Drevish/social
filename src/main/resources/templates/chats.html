@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chats</title>
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/core.css}">
+    <link rel="stylesheet" th:href="@{/css/chats.css}">
+</head>
+<body>
+
+<div class="header" th:replace="/fragments/header :: header"></div>
+
+<main>
+    <div class="container">
+        <div class="row">
+            <div class="col-3" th:insert="/fragments/side-menu :: side-menu">
+            </div>
+            <div class="col-9">
+                <h1>Chats</h1>
+                <div class="chat" th:each="chat: ${chats}">
+                    <div th:if="${chat.users.size() == 2}"
+                         th:with="users=${chat.users.toArray()},
+                          otherUser=${users[0] == user ? users[1] : users[0]},
+                            info=${userInfos.get(otherUser.id)}">
+                        <div class="row">
+                            <div class="col-1 image-col">
+                                <a target="_blank" th:href="${'/profile/id' + otherUser.id}">
+                                    <img th:if="${info.image != null}"
+                                         th:src="${'/file/' + info.image.id}">
+                                    <img th:if="${info.image == null}"
+                                         th:src="@{/image/profileImage/default.png}">
+                                </a>
+                            </div>
+
+                            <div class="col-11 info-col"
+                                 th:with="message = ${(chat.messages != null && chat.messages.size() > 0) ?
+                                 chat.messages.get(chat.messages.size()-1) : null}">
+                                <a class="last-message" th:href="#{path.chat} + '/' + ${chat.id}">
+                                    <div class="top-row">
+                                        <span class="name" th:text="${info.name + ' ' + info.surname}"></span>
+                                        <span class="float-right date" th:if="${message != null}"
+                                              th:text="${message.sendDate}"></span>
+                                    </div>
+
+                                    <div class="bottom-row">
+                                        <span class="last-message-sender-image"
+                                              th:if="${message != null && message.sender.id == userInfo.id}">
+                                            <img th:if="${userInfo.image != null}"
+                                                 th:src="${'/file/' + userInfo.image.id}">
+                                            <img th:if="${userInfo.image == null}"
+                                                 th:src="@{/image/profileImage/default.png}">
+                                        </span>
+                                        <span th:if="${message != null}" th:text="${message.text}"></span>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div th:if="${chat.users.size() == 1}">
+                        <!-- Self-dialog -->
+                    </div>
+                    <div th:if="${chat.users.size() > 2}">
+                        <!-- Group chat -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script th:src="@{/js/jquery-3.4.1.min.js}"></script>
+<script th:src="@{/js/popper.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+
+</body>
+</html>

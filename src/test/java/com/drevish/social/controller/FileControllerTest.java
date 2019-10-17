@@ -1,5 +1,6 @@
 package com.drevish.social.controller;
 
+import com.drevish.social.config.CustomAccessDeniedHandler;
 import com.drevish.social.exception.MyFileNotFoundException;
 import com.drevish.social.model.entity.File;
 import com.drevish.social.service.FileStorageService;
@@ -19,7 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(controllers = FileController.class)
+@WebMvcTest(controllers = {FileController.class, CustomAccessDeniedHandler.class})
 @AutoConfigureMockMvc
 @WithMockUser(username = "email@email.com")
 public class FileControllerTest {

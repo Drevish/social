@@ -1,5 +1,6 @@
 package com.drevish.social.controller;
 
+import com.drevish.social.config.CustomAccessDeniedHandler;
 import com.drevish.social.exception.UserNotFoundException;
 import com.drevish.social.model.entity.User;
 import com.drevish.social.model.entity.UserInfo;
@@ -23,7 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(controllers = ProfileController.class)
+@WebMvcTest(controllers = {ProfileController.class, CustomAccessDeniedHandler.class})
 @AutoConfigureMockMvc
 @WithMockUser(username = "email@email.com")
 public class ProfileControllerTest extends ControllerTestWithUserAndUserInfo {
@@ -56,7 +57,8 @@ public class ProfileControllerTest extends ControllerTestWithUserAndUserInfo {
 
         mockMvc.perform(get("/profile/id{id}", anotherUser.getId()))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("userInfo", anotherUserInfo))
+                .andExpect(model().attribute("userInfo", testUserInfo))
+                .andExpect(model().attribute("otherUserInfo", anotherUserInfo))
                 .andExpect(content().string(StringContains.containsString(anotherUserInfo.getName())))
                 .andExpect(content().string(StringContains.containsString(anotherUserInfo.getSurname())));
     }

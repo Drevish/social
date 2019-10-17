@@ -52,7 +52,7 @@ public class ProfileController extends ControllerWithUserInfo {
         }
 
         UserInfo userInfo = userInfoService.getUserInfoByEmail(user.getEmail());
-        model.addAttribute("userInfo", userInfo);
+        model.addAttribute("otherUserInfo", userInfo);
 
         return otherProfileView;
     }

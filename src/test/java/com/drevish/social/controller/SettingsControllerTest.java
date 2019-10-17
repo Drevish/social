@@ -1,5 +1,6 @@
 package com.drevish.social.controller;
 
+import com.drevish.social.config.CustomAccessDeniedHandler;
 import com.drevish.social.exception.InvalidPasswordException;
 import com.drevish.social.service.SettingsService;
 import org.hamcrest.core.StringContains;
@@ -26,7 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(controllers = SettingsController.class)
+@WebMvcTest(controllers = {SettingsController.class, CustomAccessDeniedHandler.class})
 @AutoConfigureMockMvc
 @WithMockUser(username = "email@email.com")
 public class SettingsControllerTest extends ControllerTestWithUserAndUserInfo {

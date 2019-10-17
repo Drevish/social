@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Messages</title>
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/core.css}">
+    <link rel="stylesheet" th:href="@{/css/chat.css}">
+</head>
+<body>
+
+<div class="header" th:replace="/fragments/header :: header"></div>
+
+<main>
+    <div class="container">
+        <div class="row">
+            <div class="col-3" th:insert="/fragments/side-menu :: side-menu">
+            </div>
+            <div class="col-9">
+                <div th:if="${chat.users.size() == 2}"
+                     th:with="users=${chat.users.toArray()},
+                          otherUser=${users[0] == user ? users[1] : users[0]},
+                            info=${userInfos.get(otherUser.id)}">
+
+                    <div class="row chat-header">
+                        <div class="col-2">
+                            <a class="button-back d-flex align-items-center d-block" th:href="@{/chat}">
+                                <span class="text">Back</span>
+                            </a>
+                        </div>
+
+                        <div class="col-8">
+                            <div class="text-center mt-3 font-weight-bold">
+                                <a class="text profile-link" th:href="${'/profile/id' + otherUser.id}"
+                                   th:text="${info.name + ' ' + info.surname}"></a>
+                            </div>
+                        </div>
+
+                        <div class="col-2">
+                            <a class="profile-link" th:href="${'/profile/id' + otherUser.id}">
+                                <img class="float-right mr-2 mt-1 profile-image-small" th:if="${info.image != null}"
+                                     th:src="${'/file/' + info.image.id}">
+                                <img class="float-right profile-image-small" th:if="${info.image == null}"
+                                     th:src="@{/image/profileImage/default.png}">
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="message container-fluid" th:each="message: ${chat.messages}"
+                         th:with="senderInfo=${(message.sender == user) ? userInfo : info}">
+                        <div class="row">
+                            <div class="col-1">
+                                <a class="profile-link" th:href="${'/profile/id' + senderInfo.id}">
+                                    <img class="profile-image" th:if="${senderInfo.image != null}"
+                                         th:src="${'/file/' + senderInfo.image.id}">
+                                    <img class="profile-image" th:if="${senderInfo.image == null}"
+                                         th:src="@{/image/profileImage/default.png}">
+                                </a>
+                            </div>
+                            <div class="col-11 message-col">
+                                <div class="top-row">
+                                    <a class="sender-name"
+                                       th:href="${'/profile/id' + senderInfo.id}" th:text="${senderInfo.name}"></a>
+                                    <span class="ml-2 message-date" th:text="${message.sendDate}"></span>
+                                </div>
+                                <div class="bottom-row" th:text="${message.text}"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div th:if="${chat.users.size() == 1}">
+                    <!-- Self-dialog -->
+                </div>
+                <div th:if="${chat.users.size() > 2}">
+                    <!-- Group chat -->
+                </div>
+
+                <form class="message-form" method="post" th:action="${'/chat/' + chat.id + '/send'}">
+                    <div class="form-group row">
+                        <div class="col-10">
+                            <input class="form-control" name="text" placeholder="Write a message..." type="text">
+                        </div>
+                        <div class="col-2">
+                            <button class="form-control btn btn-outline-dark" type="submit">Send</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script th:src="@{/js/jquery-3.4.1.min.js}"></script>
+<script th:src="@{/js/popper.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+
+</body>
+</html>

@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -18,6 +19,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserDetailsService customUserDetailsService;
+
+    @Autowired
+    private AccessDeniedHandler customAccessDeniedHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -41,6 +45,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/css/**", "/js/**").permitAll()
                 .antMatchers("/", "/register").permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/chat/{chatId}", "/chat/{chatId}/send")
+                .access("isAuthenticated() && @webSecurity.hasChatPermission(authentication, #chatId)")
+                .antMatchers("/chat/{userId}/open").authenticated()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -52,6 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .logoutSuccessUrl("/login?logout")
-                .permitAll();
+                .permitAll()
+                .and().exceptionHandling().accessDeniedHandler(customAccessDeniedHandler);
     }
 }
