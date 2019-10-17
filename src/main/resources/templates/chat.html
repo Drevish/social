@@ -2,23 +2,16 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Chats</title>
+    <title>Messages</title>
 
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/css/core.css}">
-
-    <style>
-        img {
-            width: 100px;
-            height: 100px;
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/chat.css}">
 </head>
 <body>
 
 <div class="header" th:replace="/fragments/header :: header"></div>
 
-<!-- TODO: beautify and add message date, add navigation between chat, chats and profile -->
 <main>
     <div class="container">
         <div class="row">
@@ -30,60 +23,52 @@
                           otherUser=${users[0] == user ? users[1] : users[0]},
                             info=${userInfos.get(otherUser.id)}">
 
-                    <div class="row">
+                    <div class="row chat-header">
                         <div class="col-2">
-                            <a target="_blank" th:href="${'/profile/id' + otherUser.id}">
-                                <img th:if="${info.image != null}"
-                                     th:src="${'/file/' + info.image.id}">
-                                <img th:if="${info.image == null}"
-                                     th:src="@{/image/profileImage/default.png}">
+                            <a class="button-back d-flex align-items-center d-block" th:href="@{/chat}">
+                                <span class="text">Back</span>
                             </a>
                         </div>
 
-                        <div class="col-10">
-                            <a th:href="#{path.chat} + '/' + ${chat.id}">
-                                <div th:text="${info.name + ' ' + info.surname}"></div>
+                        <div class="col-8">
+                            <div class="text-center mt-3 font-weight-bold">
+                                <a class="text profile-link" th:href="${'/profile/id' + otherUser.id}"
+                                   th:text="${info.name + ' ' + info.surname}"></a>
+                            </div>
+                        </div>
+
+                        <div class="col-2">
+                            <a class="profile-link" th:href="${'/profile/id' + otherUser.id}">
+                                <img class="float-right mr-2 mt-1 profile-image-small" th:if="${info.image != null}"
+                                     th:src="${'/file/' + info.image.id}">
+                                <img class="float-right profile-image-small" th:if="${info.image == null}"
+                                     th:src="@{/image/profileImage/default.png}">
                             </a>
                         </div>
                     </div>
 
-                    Messages:
-                    <table class="table table-bordered">
-                        <thead>
-                        <tr>
-                            <td>Photo</td>
-                            <td>Name</td>
-                            <td>Text</td>
-                            <td>Time</td>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="message: ${chat.messages}">
-                            <th:block th:unless="${message.sender == user}">
-                                <td>
-                                    <img th:if="${info.image != null}"
-                                         th:src="${'/file/' + info.image.id}">
-                                    <img th:if="${info.image == null}"
+                    <div class="message container-fluid" th:each="message: ${chat.messages}"
+                         th:with="senderInfo=${(message.sender == user) ? userInfo : info}">
+                        <div class="row">
+                            <div class="col-1">
+                                <a class="profile-link" th:href="${'/profile/id' + senderInfo.id}">
+                                    <img class="profile-image" th:if="${senderInfo.image != null}"
+                                         th:src="${'/file/' + senderInfo.image.id}">
+                                    <img class="profile-image" th:if="${senderInfo.image == null}"
                                          th:src="@{/image/profileImage/default.png}">
-                                </td>
-                                <td th:text="${info.name}"></td>
-                                <td th:text="${message.text}"></td>
-                                <td th:text="${message.sendDate}"></td>
-                            </th:block>
-                            <th:block th:if="${message.sender == user}">
-                                <td>
-                                    <img th:if="${userInfo.image != null}"
-                                         th:src="${'/file/' + userInfo.image.id}">
-                                    <img th:if="${userInfo.image == null}"
-                                         th:src="@{/image/profileImage/default.png}">
-                                </td>
-                                <td th:text="${userInfo.name}"></td>
-                                <td th:text="${message.text}"></td>
-                                <td th:text="${message.sendDate}"></td>
-                            </th:block>
-                        </tr>
-                        </tbody>
-                    </table>
+                                </a>
+                            </div>
+                            <div class="col-11 message-col">
+                                <div class="top-row">
+                                    <a class="sender-name"
+                                       th:href="${'/profile/id' + senderInfo.id}" th:text="${senderInfo.name}"></a>
+                                    <span class="ml-2 message-date" th:text="${message.sendDate}"></span>
+                                </div>
+                                <div class="bottom-row" th:text="${message.text}"></div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
                 <div th:if="${chat.users.size() == 1}">
                     <!-- Self-dialog -->
@@ -92,10 +77,14 @@
                     <!-- Group chat -->
                 </div>
 
-                <form method="post" th:action="${'/chat/' + chat.id + '/send'}">
-                    <div class="form-group">
-                        <input class="form-control" name="text" type="text">
-                        <button class="form-control" type="submit">Send</button>
+                <form class="message-form" method="post" th:action="${'/chat/' + chat.id + '/send'}">
+                    <div class="form-group row">
+                        <div class="col-10">
+                            <input class="form-control" name="text" placeholder="Write a message..." type="text">
+                        </div>
+                        <div class="col-2">
+                            <button class="form-control btn btn-outline-dark" type="submit">Send</button>
+                        </div>
                     </div>
                 </form>
             </div>

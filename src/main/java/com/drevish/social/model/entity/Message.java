@@ -17,6 +17,7 @@ public class Message {
     @OneToOne
     private User sender;
 
+    @Column(length = 2048)
     private String text;
 
     @ManyToOne
