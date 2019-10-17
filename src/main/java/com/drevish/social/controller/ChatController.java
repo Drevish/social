@@ -9,7 +9,6 @@ import com.drevish.social.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -87,9 +86,13 @@ public class ChatController extends ControllerWithUserInfo {
     }
 
     @PostMapping("/{userId}/open")
-    public String openDialog(@PathVariable Long userId, Principal principal, Authentication authentication) {
-        User companion = userService.getUserById(userId);
+    public String openDialog(@PathVariable Long userId, Principal principal) {
         User user = userService.getUserByEmail(principal.getName());
+        if (userId.equals(user.getId())) {
+            // self-chat, is currently unsupported
+            return "redirect:/chat";
+        }
+        User companion = userService.getUserById(userId);
         Chat chat = chatService.openNewOrGetExistingDialogue(user, companion);
         return "redirect:/chat/" + chat.getId();
     }

@@ -1,0 +1,48 @@
+.chat {
+  &:not(:last-child) {
+    border-bottom: 1px solid grey;
+  }
+
+  .image-col {
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+    }
+  }
+
+  .info-col {
+    padding-top: 10px;
+
+    .last-message {
+      color: #212529;
+
+      &:hover {
+        text-decoration: none;
+      }
+
+      .top-row {
+        .name {
+          font-weight: bold;
+        }
+
+        .date {
+          color: gray;
+        }
+      }
+
+      .bottom-row {
+        .last-message-sender-image {
+          img {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+          }
+        }
+      }
+    }
+  }
+}

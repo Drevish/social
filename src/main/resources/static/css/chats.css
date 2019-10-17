@@ -1,0 +1,25 @@
+.chat:not(:last-child) {
+  border-bottom: 1px solid grey; }
+.chat .image-col {
+  padding-top: 10px;
+  padding-bottom: 10px; }
+  .chat .image-col img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%; }
+.chat .info-col {
+  padding-top: 10px; }
+  .chat .info-col .last-message {
+    color: #212529; }
+    .chat .info-col .last-message:hover {
+      text-decoration: none; }
+    .chat .info-col .last-message .top-row .name {
+      font-weight: bold; }
+    .chat .info-col .last-message .top-row .date {
+      color: gray; }
+    .chat .info-col .last-message .bottom-row .last-message-sender-image img {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%; }
+
+/*# sourceMappingURL=chats.css.map */
