@@ -67,7 +67,6 @@ public class ChatControllerTest extends ControllerTestWithUserAndUserInfo {
                 .andExpect(model().attributeExists("userInfos"));
     }
 
-
     @Test
     public void shouldShowExactChat() throws Exception {
         when(chatService.getById(1L)).thenReturn(testChat);
@@ -106,9 +105,9 @@ public class ChatControllerTest extends ControllerTestWithUserAndUserInfo {
     @Test
     @WithMockUser(username = "email@email.com")
     public void shouldReturnAllChatsIfHasNoChatAuthority() throws Exception {
-        mockMvc.perform(get("/chat/{id}", 1))
+        mockMvc.perform(get("/chat/{id}", 2))
                 .andExpect(redirectedUrl("/chat"));
-        mockMvc.perform(post("/chat/{id}/send", 1)
+        mockMvc.perform(post("/chat/{id}/send", 2)
                 .with(csrf())
                 .param("text", "message"))
                 .andExpect(redirectedUrl("/chat"));
