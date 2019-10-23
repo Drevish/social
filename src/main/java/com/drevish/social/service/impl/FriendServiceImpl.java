@@ -5,9 +5,11 @@ import com.drevish.social.model.entity.User;
 import com.drevish.social.model.repository.UserRepository;
 import com.drevish.social.service.FriendService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 
+@Service
 public class FriendServiceImpl implements FriendService {
     @Autowired
     private UserRepository userRepository;
@@ -61,6 +63,17 @@ public class FriendServiceImpl implements FriendService {
 
         userRepository.save(user);
         userRepository.save(friend);
+    }
+
+    @Override
+    public void unsubscribe(User user, User subscribedTo) {
+        guaranteeNotNullLists(user, subscribedTo);
+
+        user.getUpcomingFriendRequests().remove(subscribedTo);
+        subscribedTo.getIncomingFriendRequests().remove(user);
+
+        userRepository.save(user);
+        userRepository.save(subscribedTo);
     }
 
     private void guaranteeNotNullLists(User... users) {

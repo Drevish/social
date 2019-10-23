@@ -121,6 +121,18 @@ public class FriendServiceImplTest {
         assertEquals(FriendState.INCOMING_FRIEND_REQUEST, friendService.getRelation(user, friend));
     }
 
+    @Test
+    public void shouldUnsubscribe() {
+        friendService.unsubscribe(user, userSubscribedTo);
+
+        verify(userRepository).save(user);
+        verify(userRepository).save(userSubscribedTo);
+        verifyNoMoreInteractions(userRepository);
+
+        assertEquals(FriendState.NONE, friendService.getRelation(userSubscribedTo, user));
+        assertEquals(FriendState.NONE, friendService.getRelation(user, userSubscribedTo));
+    }
+
     @TestConfiguration
     static class FriendServiceImplTestContextConfiguration {
         @Bean

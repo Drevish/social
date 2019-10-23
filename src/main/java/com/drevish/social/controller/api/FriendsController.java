@@ -7,6 +7,7 @@ import com.drevish.social.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,28 +47,32 @@ public class FriendsController {
     }
 
     @PostMapping("/subscribe")
-    public void subscribe(@RequestBody Long userId, @RequestBody Long subscribingToId) {
-        User user = getUser(userId);
-        User subscribingTo = getUser(subscribingToId);
+    public void subscribe(@RequestBody Long userId, Principal principal) {
+        User user = getUser(principal.getName());
+        User subscribingTo = getUser(userId);
         friendService.subscribe(user, subscribingTo);
     }
 
     @PostMapping("/accept")
-    public void acceptFriendRequest(@RequestBody Long userId, @RequestBody Long requesterId) {
-        User user = getUser(userId);
-        User requester = getUser(requesterId);
+    public void acceptFriendRequest(@RequestBody Long userId, Principal principal) {
+        User user = getUser(principal.getName());
+        User requester = getUser(userId);
         friendService.acceptFriendRequest(user, requester);
     }
 
     @PostMapping("/delete")
-    public void deleteFriend(@RequestBody Long userId, @RequestBody Long friendId) {
-        User user = getUser(userId);
-        User friend = getUser(friendId);
+    public void deleteFriend(@RequestBody Long userId, Principal principal) {
+        User user = getUser(principal.getName());
+        User friend = getUser(userId);
         friendService.deleteFriend(user, friend);
     }
 
     private User getUser(Long userId) {
         return userService.getUserById(userId);
+    }
+
+    private User getUser(String email) {
+        return userService.getUserByEmail(email);
     }
 
     private List<Long> mapUsersToIds(List<User> users) {
