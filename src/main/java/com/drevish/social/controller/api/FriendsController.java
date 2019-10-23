@@ -67,6 +67,13 @@ public class FriendsController {
         friendService.deleteFriend(user, friend);
     }
 
+    @PostMapping("/unsubscribe")
+    public void unsubscribe(@RequestBody Long userId, Principal principal) {
+        User user = getUser(principal.getName());
+        User subscribedTo = getUser(userId);
+        friendService.unsubscribe(user, subscribedTo);
+    }
+
     private User getUser(Long userId) {
         return userService.getUserById(userId);
     }
