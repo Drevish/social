@@ -25,6 +25,26 @@
                             <img alt="" th:if="${otherUserInfo.image == null}"
                                  th:src="@{/image/profileImage/default.png}">
                         </div>
+                        <form class="form form-inline mt-2" method="post"
+                              th:action="${'/profile/id' + otherUserInfo.id}" th:if="${relation.toString()=='NONE'}">
+                            <input hidden name="change" type="text" value="subscribe">
+                            <button class="btn btn-block btn-outline-info" type="submit">Subscribe</button>
+                        </form>
+                        <form class="form form-inline mt-2" method="post"
+                              th:action="${'/profile/id' + otherUserInfo.id}" th:if="${relation.toString()=='UPCOMING_FRIEND_REQUEST'}">
+                            <input hidden name="change" type="text" value="unsubscribe">
+                            <button class="btn btn-block btn-outline-warning" type="submit">Unsubscribe</button>
+                        </form>
+                        <form class="form form-inline mt-2" method="post"
+                              th:action="${'/profile/id' + otherUserInfo.id}" th:if="${relation.toString()=='INCOMING_FRIEND_REQUEST'}">
+                            <input hidden name="change" type="text" value="acceptFriendRequest">
+                            <button class="btn btn-block btn-outline-success" type="submit">Accept friend request</button>
+                        </form>
+                        <form class="form form-inline mt-2" method="post"
+                              th:action="${'/profile/id' + otherUserInfo.id}" th:if="${relation.toString()=='FRIEND'}">
+                            <input hidden name="change" type="text" value="deleteFriend">
+                            <button class="btn btn-block btn-outline-danger" type="submit">Delete friend</button>
+                        </form>
                     </div>
                     <div class="col-8">
                         <div class="content">
