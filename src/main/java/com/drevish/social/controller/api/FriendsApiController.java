@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/search/user/friends")
+@RequestMapping("/api/friends")
 //TODO: test
-public class FriendsController {
+public class FriendsApiController {
     @Autowired
     private UserService userService;
 

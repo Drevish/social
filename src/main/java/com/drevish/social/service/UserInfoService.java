@@ -9,6 +9,8 @@ import org.springframework.web.multipart.MultipartFile;
 public interface UserInfoService {
     UserInfo getUserInfoByEmail(String email) throws UserNotFoundException;
 
+    UserInfo getUserInfoById(Long id) throws UserNotFoundException;
+
     void save(UserInfo userInfo);
 
     void updateNameAndSurname(UserInfoDto newValues, User user);

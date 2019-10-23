@@ -33,6 +33,11 @@ public class UserInfoServiceImpl implements UserInfoService {
         return getUserInfoByUser(user);
     }
 
+    @Override
+    public UserInfo getUserInfoById(Long id) throws UserNotFoundException {
+        return getUserInfoByUser(User.builder().id(id).build());
+    }
+
     private UserInfo getUserInfoByUser(User user) {
         return userInfoRepository.findById(user.getId()).orElseThrow(() ->
                 new UserNotFoundException("No user info with specified user id was found"));
