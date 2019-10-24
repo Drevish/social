@@ -1,8 +1,34 @@
-class App extends React.Component {
+function ProfileImage(props) {
+    return !props.imageId ?
+        <img src={'/image/profileImage/default.png'}/> :
+        <img src={'/file/' + props.imageId}/>
+}
+
+function UserProfile(props) {
+    const info = props.userInfo;
+    return (
+        <div className="container-fluid">
+            <div className="row">
+                <div className="col-1 profile-image-col">
+                    <a className="profile-link" href={'/profile/id' + info.id}>
+                        <ProfileImage imageId={info.imageId}/>
+                    </a>
+                </div>
+
+                <div className="col-11 profile-info-col">
+                    <a className="profile-link" href={'/profile/id' + info.id}>
+                        <span className="name">{info.name} {info.surname}</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+class Friends extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            userInfos: [],
             friends: [],
             incoming: [],
             upcoming: []
@@ -10,18 +36,14 @@ class App extends React.Component {
     }
 
     fetchFriends() {
-        fetch('/api/friends/upcoming/' + userId)
+        fetch('/api/friends/friend/' + userId)
             .then(response => response.json())
             .then(data => {
-                data.forEach(e => {
-                    fetch('/api/userInfo/' + e)
-                        .then(response => response.json())
-                        .then(data =>
-                            this.setState(state => ({
-                                friends: [...state.friends, data]
-                            }))
-                        );
-                });
+                Promise.all(data.map(id => fetch('/api/userInfo/' + id)
+                    .then(response => response.json()))
+                ).then(data => this.setState({
+                    friends: data
+                }))
             });
     }
 
@@ -30,27 +52,23 @@ class App extends React.Component {
     }
 
     render() {
-        const friends = this.state.friends.map((userInfo) => (
-            <li>
-                {userInfo.name} {userInfo.surname}
+        const friends = this.state.friends.map((info) => (
+            <li key={info.id}>
+                <UserProfile userInfo={info}/>
             </li>
         ));
 
         return (
-            <div>
-                Text <br/>
-                <h3>Friends</h3>
-                <ul>
-                    {friends}
-                </ul>
-                {this.state.incoming} <br/>
-                {this.state.upcoming} <br/>
-            </div>
+            <ul className='profiles-list'>
+                {friends}
+            </ul>
         );
     }
 }
 
+//TODO: extract components
+
 ReactDOM.render(
-    <App/>,
-    document.getElementById('root')
+    <Friends/>,
+    document.getElementById('friends')
 );

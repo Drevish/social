@@ -1,0 +1,15 @@
+#pills-tab {
+  padding: 10px 0 6px 0;
+  text-align: center;
+
+  .nav-link {
+    color: #222222;
+
+    &.active {
+      background-color: transparent;
+      color: black;
+      border-bottom: 1px solid black;
+      border-radius: 0;
+    }
+  }
+}
