@@ -49,6 +49,7 @@ main {
     padding-top: 10px;
     padding-bottom: 10px; }
     .profiles-list .profile-image-col img {
+      object-fit: cover;
       width: 50px;
       height: 50px;
       border-radius: 50%; }
