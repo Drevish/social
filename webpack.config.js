@@ -1,4 +1,5 @@
 const path = require("path");
+const webpack = require("webpack");
 
 const SRC_DIR = "./src/main/resources/static/src/pages/";
 
@@ -31,5 +32,10 @@ module.exports = {
     },
     resolve: {
         extensions: ['.js', '.jsx']
-    }
+    },
+    plugins: [
+        new webpack.ProvidePlugin({
+            "React": "react",
+        }),
+    ],
 };

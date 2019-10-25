@@ -41,6 +41,7 @@ mvnw.cmd
 
 # node.js
 node_modules
+package-lock.json
 
 # compiled js bundles
 **/resources/static/out
