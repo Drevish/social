@@ -38,3 +38,10 @@ mvnw.cmd
 # static
 *.map
 **/.sass-cache/
+
+# node.js
+node_modules
+package-lock.json
+
+# compiled js bundles
+**/resources/static/out

@@ -88,10 +88,7 @@ public class FriendServiceImplTest {
     public void shouldSubscribe() {
         User subscribingTo = new User();
         friendService.subscribe(user, subscribingTo);
-
-        verify(userRepository).save(user);
-        verify(userRepository).save(subscribingTo);
-        verifyNoMoreInteractions(userRepository);
+        verifyOnlySavedThese(user, subscribingTo);
 
         assertEquals(FriendState.UPCOMING_FRIEND_REQUEST, friendService.getRelation(user, subscribingTo));
         assertEquals(FriendState.INCOMING_FRIEND_REQUEST, friendService.getRelation(subscribingTo, user));
@@ -100,10 +97,7 @@ public class FriendServiceImplTest {
     @Test
     public void shouldAcceptFriendRequest() {
         friendService.acceptFriendRequest(user, subscriber);
-
-        verify(userRepository).save(user);
-        verify(userRepository).save(subscriber);
-        verifyNoMoreInteractions(userRepository);
+        verifyOnlySavedThese(user, subscriber);
 
         assertEquals(FriendState.FRIEND, friendService.getRelation(user, subscriber));
         assertEquals(FriendState.FRIEND, friendService.getRelation(subscriber, user));
@@ -112,13 +106,26 @@ public class FriendServiceImplTest {
     @Test
     public void shouldDeleteFriend() {
         friendService.deleteFriend(user, friend);
-
-        verify(userRepository).save(user);
-        verify(userRepository).save(friend);
-        verifyNoMoreInteractions(userRepository);
+        verifyOnlySavedThese(user, friend);
 
         assertEquals(FriendState.UPCOMING_FRIEND_REQUEST, friendService.getRelation(friend, user));
         assertEquals(FriendState.INCOMING_FRIEND_REQUEST, friendService.getRelation(user, friend));
+    }
+
+    @Test
+    public void shouldUnsubscribe() {
+        friendService.unsubscribe(user, userSubscribedTo);
+        verifyOnlySavedThese(user, userSubscribedTo);
+
+        assertEquals(FriendState.NONE, friendService.getRelation(userSubscribedTo, user));
+        assertEquals(FriendState.NONE, friendService.getRelation(user, userSubscribedTo));
+    }
+
+    private void verifyOnlySavedThese(User... users) {
+        for (User user : users) {
+            verify(userRepository).save(user);
+        }
+        verifyNoMoreInteractions(userRepository);
     }
 
     @TestConfiguration

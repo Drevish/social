@@ -8,11 +8,19 @@
 
 <div class="side-menu" th:fragment="side-menu">
     <div class="list-group">
-        <a th:href="@{/profile}" class="list-group-item list-group-item-action active">
+        <a class="list-group-item list-group-item-action" th:classappend="${#request.requestURI == '/profile' ? 'active' : ''}"
+           th:href="@{/profile}">
             Profile
         </a>
-        <a class="list-group-item list-group-item-action" th:href="@{/chat}">
-            Messages
+        <a class="list-group-item list-group-item-action"
+           th:classappend="${#request.requestURI.startsWith('/friends')  ? 'active' : ''}"
+           th:href="@{/friends}">
+            Friends
+        </a>
+        <a class="list-group-item list-group-item-action"
+           th:classappend="${#request.requestURI.startsWith('/chat')  ? 'active' : ''}"
+           th:href="@{/chat}">
+            Chats
         </a>
     </div>
 </div>

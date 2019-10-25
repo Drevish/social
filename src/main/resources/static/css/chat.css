@@ -23,7 +23,8 @@
   .chat-header .profile-image-small {
     width: 40px;
     height: 40px;
-    border-radius: 50%; }
+    border-radius: 50%;
+    object-fit: cover; }
 
 .message {
   margin-top: 10px; }
@@ -31,7 +32,8 @@
     float: right;
     width: 50px;
     height: 50px;
-    border-radius: 50%; }
+    border-radius: 50%;
+    object-fit: cover; }
   .message .message-col {
     padding-left: 0; }
     .message .message-col .sender-name {

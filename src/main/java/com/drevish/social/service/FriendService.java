@@ -11,4 +11,6 @@ public interface FriendService {
     void acceptFriendRequest(User user, User requester);
 
     void deleteFriend(User user, User friend);
+
+    void unsubscribe(User user, User subscribedTo);
 }

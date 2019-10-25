@@ -64,9 +64,23 @@ public class UserInfoServiceImplTest {
     }
 
     @Test(expected = UserNotFoundException.class)
-    public void shouldThrowExceptionIfUserNotFoundInUserService() {
+    public void shouldThrowExceptionIfUserNotFoundInUserServiceGetByEmail() {
         when(userService.getUserByEmail(testUser.getEmail())).thenThrow(UserNotFoundException.class);
         userInfoService.getUserInfoByEmail(testUser.getEmail());
+    }
+
+    @Test
+    public void shouldReturnUserInfoById() {
+        when(userService.getUserById(testUser.getId())).thenReturn(testUser);
+        when(userInfoRepository.findById(testUser.getId())).thenReturn(Optional.of(testUserInfo));
+        UserInfo userInfo = userInfoService.getUserInfoById(testUser.getId());
+        assertEquals(testUserInfo, userInfo);
+    }
+
+    @Test(expected = UserNotFoundException.class)
+    public void shouldThrowExceptionIfUserNotFoundInUserServiceGetById() {
+        when(userService.getUserById(testUser.getId())).thenThrow(UserNotFoundException.class);
+        userInfoService.getUserInfoById(testUser.getId());
     }
 
     @Test(expected = UserNotFoundException.class)

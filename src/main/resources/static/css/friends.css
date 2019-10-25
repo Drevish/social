@@ -1,0 +1,17 @@
+#pills-tab {
+  padding: 10px;
+  text-align: center; }
+  #pills-tab .nav-link {
+    color: #222222; }
+    #pills-tab .nav-link.active {
+      background-color: transparent;
+      color: black;
+      border-bottom: 1px solid black;
+      border-radius: 0; }
+      #pills-tab .nav-link.active:hover {
+        background-color: transparent; }
+    #pills-tab .nav-link:hover {
+      background-color: #F8F9FA;
+      border-radius: 0; }
+
+/*# sourceMappingURL=friends.css.map */

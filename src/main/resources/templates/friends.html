@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Friends</title>
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/core.css}">
+    <link rel="stylesheet" th:href="@{/css/friends.css}">
+</head>
+<body>
+
+<div class="header" th:replace="/fragments/header :: header"></div>
+
+<main>
+    <div class="container">
+        <div class="row">
+            <div class="col-3" th:insert="/fragments/side-menu :: side-menu">
+            </div>
+            <div class="col-9">
+                <div class="container-fluid">
+                    <ul class="nav nav-pills mb-3 row" id="pills-tab" role="tablist">
+                        <li class="nav-item col p-0">
+                            <a aria-controls="pills-home" aria-selected="true" class="nav-link active"
+                               data-toggle="pill"
+                               href="#friends-tab"
+                               id="pills-home-tab" role="tab">Friends</a>
+                        </li>
+                        <li class="nav-item col p-0">
+                            <a aria-controls="pills-profile" aria-selected="false" class="nav-link" data-toggle="pill"
+                               href="#incoming-tab"
+                               id="pills-profile-tab" role="tab">Incoming requests</a>
+                        </li>
+                        <li class="nav-item col p-0">
+                            <a aria-controls="pills-contact" aria-selected="false" class="nav-link" data-toggle="pill"
+                               href="#upcoming-tab"
+                               id="pills-contact-tab" role="tab">Upcoming requests</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="tab-content" id="pills-tabContent">
+                    <div aria-labelledby="pills-home-tab" class="tab-pane fade show active" id="friends-tab"
+                         role="tabpanel">
+                        <div id="friends"></div>
+                    </div>
+                    <div aria-labelledby="pills-profile-tab" class="tab-pane fade" id="incoming-tab" role="tabpanel">
+                        <div id="incoming"></div>
+                    </div>
+                    <div aria-labelledby="pills-contact-tab" class="tab-pane fade" id="upcoming-tab" role="tabpanel">
+                        <div id="upcoming"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script th:src="@{/js/jquery-3.4.1.min.js}"></script>
+<script th:src="@{/js/popper.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+
+<script th:inline="javascript">
+    const userId = /*[[${userInfo.id}]]*/ 'User Id';
+</script>
+<script src="/out/friends.js"></script>
+</body>
+</html>
