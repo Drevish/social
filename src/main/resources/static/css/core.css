@@ -60,4 +60,14 @@ main {
     .profiles-list .profile-link:hover {
       text-decoration: none; }
 
+.side-menu .list-group {
+  border: none; }
+  .side-menu .list-group .list-group-item-action {
+    border-radius: 0;
+    border: none; }
+    .side-menu .list-group .list-group-item-action.active {
+      border-left: 1px solid black;
+      background-color: transparent;
+      color: #222222; }
+
 /*# sourceMappingURL=core.css.map */

@@ -10,6 +10,15 @@
       color: black;
       border-bottom: 1px solid black;
       border-radius: 0;
+
+      &:hover{
+        background-color: transparent;
+      }
+    }
+
+    &:hover {
+      background-color: #F8F9FA;
+      border-radius: 0;
     }
   }
 }
