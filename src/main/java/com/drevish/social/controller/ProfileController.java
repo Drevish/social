@@ -21,7 +21,6 @@ import java.security.Principal;
 @Controller
 @Slf4j
 @RequestMapping("/profile")
-//TODO: test friend methods
 public class ProfileController extends ControllerWithUserInfo {
     @Value("${view.profile}")
     private String profileView;

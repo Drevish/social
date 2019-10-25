@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/friends")
-//TODO: test
 public class FriendsController extends ControllerWithUserInfo {
     @Value("${view.friends}")
     private String friendsView;
