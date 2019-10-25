@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/userInfo")
-//TODO: test
 public class UserInfoApiController {
     @Autowired
     private UserInfoService userInfoService;
