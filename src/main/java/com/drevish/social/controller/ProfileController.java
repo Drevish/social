@@ -110,13 +110,13 @@ public class ProfileController extends ControllerWithUserInfo {
         } catch (InvalidImageException e) {
             log.warn(e.toString());
         }
-        return showOwnProfile(principal, model);
+        return "redirect:/profile";
     }
 
     @PostMapping(params = "change=delete-image")
     public String deleteImage(Principal principal, Model model) {
         UserInfo userInfo = userInfo(principal);
         userInfoService.deleteImage(userInfo);
-        return showOwnProfile(principal, model);
+        return "redirect:/profile";
     }
 }

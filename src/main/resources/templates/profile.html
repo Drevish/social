@@ -6,6 +6,7 @@
 
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/css/core.css}">
+    <link rel="stylesheet" th:href="@{/css/profile.css}">
 </head>
 <body>
 
@@ -25,28 +26,30 @@
 
                             <form enctype="multipart/form-data" method="post" th:action="#{path.profile}">
                                 <input hidden name="change" type="text" value="upload-image">
-                                <div class="form-group">
-                                    <input accept="image/*" class="form-control-file" name="image" type="file">
+                                <div class="form-group upload-button-wrapper">
+                                    <label id="upload-file-name" class="btn btn-outline-dark upload-button"
+                                           for="file-upload-input">
+                                        Choose file
+                                    </label>
+                                    <input class="form-control-file upload-input" id="file-upload-input"
+                                           accept="image/*" name="image" type="file">
                                 </div>
-                                <button class="btn btn-success btn-block mt-3" th:type="submit">Submit</button>
+                                <button class="btn btn-outline-success btn-block mt-3" th:type="submit">Submit</button>
                             </form>
 
                             <form method="post" th:action="#{path.profile}">
                                 <input hidden name="change" type="text" value="delete-image">
-                                <button class="btn btn-danger btn-block mt-3" th:type="submit">Delete image</button>
+                                <button class="btn btn-outline-danger btn-block mt-3" th:type="submit">Delete image</button>
                             </form>
                         </div>
                     </div>
                     <div class="col-8">
                         <div class="content">
-                            <h1>Hello,
+                            <h1>
                                 <span th:text="${userInfo.name}"></span>
-                                <span th:text="${userInfo.surname}"></span>!
+                                <span th:text="${userInfo.surname}"></span>
                             </h1>
-                            <p>Your email: <span th:text="${user.email}"></span></p>
-                            <a th:href="#{path.edit}">Edit profile</a><br/>
-                            <a th:href="#{path.settings}">Change settings</a><br/>
-                            <a th:href="#{path.logout}">Log out</a>
+                            <a class="font-weight-normal h4" th:href="#{path.edit}">Edit</a><br/>
                         </div>
                     </div>
                 </div>
@@ -58,6 +61,23 @@
 <script th:src="@{/js/jquery-3.4.1.min.js}"></script>
 <script th:src="@{/js/popper.min.js}"></script>
 <script th:src="@{/js/bootstrap.min.js}"></script>
+
+
+<script>
+    $(document).ready(() => {
+        const MAX_LENGTH = 15;
+
+        const input = $('#file-upload-input');
+        input.change(() => {
+            const slashIndex = input[0].value.lastIndexOf("\\");
+            let fileName = slashIndex !== -1 ? input[0].value.substring(slashIndex + 1) : "Choose file";
+            if (fileName.length > MAX_LENGTH) {
+                fileName = "..." + fileName.substring(fileName.length - MAX_LENGTH)
+            }
+            $('#upload-file-name').text(fileName);
+        });
+    });
+</script>
 
 </body>
 </html>

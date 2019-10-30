@@ -1,0 +1,17 @@
+.upload-button-wrapper {
+  position: relative;
+  overflow: hidden;
+  margin-top: 10px;
+  height: 40px; }
+  .upload-button-wrapper .upload-button {
+    position: absolute;
+    width: 100%; }
+    .upload-button-wrapper .upload-button:hover {
+      cursor: pointer; }
+  .upload-button-wrapper .upload-input {
+    position: absolute;
+    height: 40px;
+    opacity: 0;
+    z-index: -1; }
+
+/*# sourceMappingURL=profile.css.map */

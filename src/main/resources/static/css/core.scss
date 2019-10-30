@@ -1,31 +1,32 @@
 $header-height: 50px;
 
 header {
-  position: relative;
-  z-index: 100000;
-  top: 0;
-  height: $header-height;
-  width: 100%;
-  background-color: #486ae3;
-
-  .container {
-    color: #ffffff;
-    height: 100%;
-
+  .navbar {
     .row {
-      height: 100%;
-    }
-  }
+      margin-left: 0;
 
-  .logo {
-    font-size: 24px;
+      .search-form {
+        width: 250px;
+        border-radius: 50px;
+      }
 
-    a {
-      color: #ffffff;
+      .dropdown{
+        .nav-link {
+          color: lightgray;
+          padding-top: 0;
+          font-size: 20px;
+          position: relative;
+          top: 5px;
 
-      &:hover {
-        color: #ffffff;
-        text-decoration: none;
+          &[aria-expanded="true"] {
+            color: white;
+          }
+        }
+
+        .dropdown-item:active {
+          background-color: black;
+          color: white;
+        }
       }
     }
   }
@@ -99,9 +100,10 @@ main {
     .list-group-item-action{
       border-radius: 0;
       border: none;
+      border-left: 1px solid transparent;
 
       &.active{
-        border-left: 1px solid black;
+        border-color: black;
         background-color: transparent;
         color: #222222;
       }
