@@ -8,12 +8,12 @@
 </head>
 <body>
 
-<div class="header" th:replace="/fragments/header :: header"></div>
+<div class="header" th:replace="fragments/header :: header"></div>
 
 <main>
     <div class="container">
         <div class="row">
-            <div class="col-3" th:insert="/fragments/side-menu :: side-menu"></div>
+            <div class="col-3" th:insert="fragments/side-menu :: side-menu"></div>
             <div class="col-9">
                 <div class="content">
                     <h3>Edit profile</h3>
