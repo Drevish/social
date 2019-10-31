@@ -29,7 +29,7 @@
                                     <form class="settings-form" method="post" th:action="#{path.settings}"
                                           th:object="${passwordDto}">
                                         <input type="text" name="changed" value="password" hidden>
-                                        <input class="form-control" name="passwordOld" type="password"
+                                        <input class="form-control to-focus" name="passwordOld" type="password"
                                                placeholder="Current password">
                                         <input class="form-control" type="password" name="passwordNew"
                                                placeholder="New password" th:field="*{password}">
@@ -50,8 +50,8 @@
                                     <form class="settings-form" method="post" th:action="#{path.settings}"
                                           th:object="${emailDto}">
                                         <input type="text" name="changed" value="email" hidden>
-                                        <input class="form-control" type="email" name="email"
-                                               th:field="*{email}">
+                                        <input class="form-control to-focus" id="foc" type="email" name="email"
+                                               th:placeholder="*{email}">
                                         <button type="submit" class="btn btn-primary">Change</button>
                                     </form>
                                 </div>
