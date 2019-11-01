@@ -42,20 +42,22 @@ main {
   list-style: none;
   padding: 0;
   margin: 0; }
-  .profiles-list .profile-image-col {
-    padding-top: 10px;
-    padding-bottom: 10px; }
-    .profiles-list .profile-image-col img {
+  .profiles-list .profile {
+    padding: 10px 15px 10px 15px;
+    border-bottom: 1px solid lightgray; }
+    .profiles-list .profile [class^=col] {
+      margin: 0;
+      padding: 0; }
+    .profiles-list .profile .profile-image-col img {
       object-fit: cover;
-      width: 50px;
-      height: 50px;
+      width: 90px;
+      height: 90px;
       border-radius: 50%; }
-  .profiles-list .profile-info-col {
-    padding-top: 10px; }
-  .profiles-list .profile-link {
-    color: #222222; }
-    .profiles-list .profile-link:hover {
-      text-decoration: none; }
+    .profiles-list .profile .profile-info-col {
+      margin-left: -30px;
+      margin-right: 0; }
+    .profiles-list .profile .profile-link {
+      color: #222222; }
 
 .side-menu .list-group {
   border: none; }
