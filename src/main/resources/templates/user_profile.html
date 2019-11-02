@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="${otherUserInfo.name + ' ' + otherUserInfo.surname}"></title>
+    <link rel="shortcut icon" th:href="@{/image/favicon.ico}" type="image/x-icon">
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/css/core.css}">
 </head>
 <body>
 
-<div class="header" th:replace="/fragments/header :: header"></div>
+<div class="header" th:replace="fragments/header :: header"></div>
 
 <main>
     <div class="container">
 
         <div class="row">
-            <div class="col-3" th:insert="/fragments/side-menu :: side-menu">
+            <div class="col-3" th:insert="fragments/side-menu :: side-menu">
             </div>
             <div class="col-9">
                 <div class="row">
@@ -45,18 +46,18 @@
                             <input hidden name="change" type="text" value="deleteFriend">
                             <button class="btn btn-block btn-outline-danger" type="submit">Delete friend</button>
                         </form>
+                        <form class="form form-inline mt-2" method="post" th:action="${'/chat/' + otherUserInfo.id + '/open'}">
+                            <input hidden name="id" th:value="${otherUserInfo.id}" type="text">
+                            <button class="btn btn-outline-dark btn-block" th:type="submit">Open chat</button>
+                        </form>
                     </div>
+
                     <div class="col-8">
                         <div class="content">
-                            <h1>This is the page of
+                            <h1>
                                 <span th:text="${otherUserInfo.name}"></span>
-                                <span th:text="${otherUserInfo.surname}"></span>!
+                                <span th:text="${otherUserInfo.surname}"></span>
                             </h1>
-                            <form method="post" th:action="${'/chat/' + otherUserInfo.id + '/open'}">
-                                <input hidden name="id" th:value="${otherUserInfo.id}" type="text">
-                                <button class="btn btn-dark" th:type="submit">Open chat</button>
-                            </form>
-                            <a th:href="#{path.profile}">Back to own profile</a>
                         </div>
                     </div>
                 </div>

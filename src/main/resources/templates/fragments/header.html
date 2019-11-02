@@ -7,40 +7,37 @@
 <body>
 
 <header th:fragment="header">
-    <div class="container">
-        <div class="row d-flex align-items-center">
-            <div class="col-3">
-                <div class="logo">
-                    <a th:href="@{/profile}">Social</a>
+    <nav class="navbar navbar-dark bg-dark navbar-expand-lg">
+        <div class="container p-0">
+            <div class="row w-100">
+                <div class="col-3">
+                    <a class="navbar-brand" th:href="@{/profile}">Social</a>
                 </div>
-            </div>
-            <div class="col-9">
-
-                <div class="btn-group float-right dropdown">
-                    <button class="btn btn-info dropdown-toggle" data-toggle="dropdown" type="button"
-                            aria-expanded="false" aria-haspopup="true" th:text="${userInfo.name}">
-                    </button>
-
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" th:href="@{/profile}">My profile</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" th:href="@{/edit}">Edit</a>
-                        <a class="dropdown-item" th:href="@{/settings}">Settings</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" th:href="@{/logout}">Log out</a>
-                    </div>
-                </div>
-
-                <div class="float-right d-inline mr-3">
-                    <form action="/search/user" class="form-inline my-2 my-lg-0" method="get">
-                        <input aria-label="Search" class="form-control mr-sm-2" name="q" placeholder="Search"
-                               required type="search">
-                        <button class="btn btn-success my-2 my-sm-0" type="submit">Search</button>
+                <div class="col-9 right-col">
+                    <form class="form-inline d-inline" action="/search/user" method="get">
+                        <input class="form-control mr-sm-2 search-form" name="q"
+                               type="search" placeholder="Search" aria-label="Search" required>
+                        <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
                     </form>
+
+                    <div class="nav-item float-right dropdown">
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"
+                                aria-expanded="false" aria-haspopup="true" th:text="${userInfo.name}">
+                        </a>
+
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" th:href="@{/profile}">My profile</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" th:href="@{/edit}">Edit</a>
+                            <a class="dropdown-item" th:href="@{/settings}">Settings</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item badge-danger" th:href="@{/logout}">Log out</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </nav>
 </header>
 
 </body>

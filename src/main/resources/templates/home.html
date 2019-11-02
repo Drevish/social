@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Home</title>
+    <link rel="shortcut icon" th:href="@{/image/favicon.ico}" type="image/x-icon">
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <style>
         body{
@@ -12,9 +13,14 @@
 </head>
 <body>
     <div class="container">
-        <h1>Welcome, Imlerith!</h1>
-        <h3><a th:href="#{path.login}">Log in</a><br/></h3>
-        <h3><a th:href="#{path.register}">Register</a></h3>
+        <div class="display-1 mb-5">Welcome to <b>Social</b>!</div>
+        <div class="display-4 text-justify mb-5">
+            It's the light core of social network.
+            Here you can create account and change settings,
+            find other users, add them as friends
+            and send or receive messages</div>
+        <a class="display-3  float-left" th:href="#{path.login}">Log in</a>
+        <a class="display-3 float-right" th:href="#{path.register}">Register</a>
     </div>
 </body>
 </html>

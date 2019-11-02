@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Messages</title>
-
+    <link rel="shortcut icon" th:href="@{/image/favicon.ico}" type="image/x-icon">
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/css/core.css}">
     <link rel="stylesheet" th:href="@{/css/chat.css}">
 </head>
 <body>
 
-<div class="header" th:replace="/fragments/header :: header"></div>
+<div class="header" th:replace="fragments/header :: header"></div>
 
 <main>
     <div class="container">
         <div class="row">
-            <div class="col-3" th:insert="/fragments/side-menu :: side-menu">
+            <div class="col-3" th:insert="fragments/side-menu :: side-menu">
             </div>
             <div class="col-9">
                 <div th:if="${chat.users.size() == 2}"

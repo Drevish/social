@@ -57,8 +57,7 @@ public class ProfileControllerTest extends ControllerTestWithUserAndUserInfo {
     private ResultActions verifyProfilePageModelAttributes(ResultActions actions) throws Exception {
         return actions.andExpect(model().attribute("userInfo", testUserInfo))
                 .andExpect(content().string(StringContains.containsString(testUserInfo.getName())))
-                .andExpect(content().string(StringContains.containsString(testUserInfo.getSurname())))
-                .andExpect(content().string(StringContains.containsString(testUser.getEmail())));
+                .andExpect(content().string(StringContains.containsString(testUserInfo.getSurname())));
     }
 
     @Test
@@ -101,8 +100,7 @@ public class ProfileControllerTest extends ControllerTestWithUserAndUserInfo {
                 .file(file)
                 .with(csrf())
                 .param("change", "upload-image"))
-                .andExpect(status().isOk());
-        verifyProfilePageModelAttributes(actions);
+                .andExpect(redirectedUrl("/profile"));
         verify(userInfoService, times(1)).setImage(file, testUserInfo);
     }
 
@@ -112,8 +110,7 @@ public class ProfileControllerTest extends ControllerTestWithUserAndUserInfo {
         ResultActions actions = mockMvc.perform(post("/profile")
                 .with(csrf())
                 .param("change", "delete-image"))
-                .andExpect(status().isOk());
-        verifyProfilePageModelAttributes(actions);
+                .andExpect(redirectedUrl("/profile"));
         verify(userInfoService, times(1)).deleteImage(testUserInfo);
     }
 

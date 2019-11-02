@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Change settings</title>
+    <link rel="shortcut icon" th:href="@{/image/favicon.ico}" type="image/x-icon">
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/css/core.css}">
     <link rel="stylesheet" th:href="@{/css/settings.css}">
 </head>
 <body>
 
-<div class="header" th:replace="/fragments/header :: header"></div>
+<div class="header" th:replace="fragments/header :: header"></div>
 
 <main>
     <div class="container">
         <div class="row">
-            <div class="col-3" th:insert="/fragments/side-menu :: side-menu"></div>
+            <div class="col-3" th:insert="fragments/side-menu :: side-menu"></div>
             <div class="col-9">
                 <div class="content">
                     <h3>General settings</h3>
@@ -29,7 +30,7 @@
                                     <form class="settings-form" method="post" th:action="#{path.settings}"
                                           th:object="${passwordDto}">
                                         <input type="text" name="changed" value="password" hidden>
-                                        <input class="form-control" name="passwordOld" type="password"
+                                        <input class="form-control to-focus" name="passwordOld" type="password"
                                                placeholder="Current password">
                                         <input class="form-control" type="password" name="passwordNew"
                                                placeholder="New password" th:field="*{password}">
@@ -50,8 +51,8 @@
                                     <form class="settings-form" method="post" th:action="#{path.settings}"
                                           th:object="${emailDto}">
                                         <input type="text" name="changed" value="email" hidden>
-                                        <input class="form-control" type="email" name="email"
-                                               th:field="*{email}">
+                                        <input class="form-control to-focus" id="foc" type="email" name="email"
+                                               th:placeholder="*{email}">
                                         <button type="submit" class="btn btn-primary">Change</button>
                                     </form>
                                 </div>

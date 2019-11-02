@@ -1,22 +1,19 @@
-header {
-  position: relative;
-  z-index: 100000;
-  top: 0;
-  height: 50px;
-  width: 100%;
-  background-color: #486ae3; }
-  header .container {
-    color: #ffffff;
-    height: 100%; }
-    header .container .row {
-      height: 100%; }
-  header .logo {
-    font-size: 24px; }
-    header .logo a {
-      color: #ffffff; }
-      header .logo a:hover {
-        color: #ffffff;
-        text-decoration: none; }
+header .navbar .row {
+  margin-left: 0; }
+  header .navbar .row .search-form {
+    width: 250px;
+    border-radius: 50px; }
+  header .navbar .row .dropdown .nav-link {
+    color: lightgray;
+    padding-top: 0;
+    font-size: 20px;
+    position: relative;
+    top: 5px; }
+    header .navbar .row .dropdown .nav-link[aria-expanded="true"] {
+      color: white; }
+  header .navbar .row .dropdown .dropdown-item:active {
+    background-color: black;
+    color: white; }
 
 main {
   margin-top: 10px; }
@@ -45,28 +42,31 @@ main {
   list-style: none;
   padding: 0;
   margin: 0; }
-  .profiles-list .profile-image-col {
-    padding-top: 10px;
-    padding-bottom: 10px; }
-    .profiles-list .profile-image-col img {
+  .profiles-list .profile {
+    padding: 10px 15px 10px 15px;
+    border-bottom: 1px solid lightgray; }
+    .profiles-list .profile [class^=col] {
+      margin: 0;
+      padding: 0; }
+    .profiles-list .profile .profile-image-col img {
       object-fit: cover;
-      width: 50px;
-      height: 50px;
+      width: 90px;
+      height: 90px;
       border-radius: 50%; }
-  .profiles-list .profile-info-col {
-    padding-top: 10px; }
-  .profiles-list .profile-link {
-    color: #222222; }
-    .profiles-list .profile-link:hover {
-      text-decoration: none; }
+    .profiles-list .profile .profile-info-col {
+      margin-left: -30px;
+      margin-right: 0; }
+    .profiles-list .profile .profile-link {
+      color: #222222; }
 
 .side-menu .list-group {
   border: none; }
   .side-menu .list-group .list-group-item-action {
     border-radius: 0;
-    border: none; }
+    border: none;
+    border-left: 1px solid transparent; }
     .side-menu .list-group .list-group-item-action.active {
-      border-left: 1px solid black;
+      border-color: black;
       background-color: transparent;
       color: #222222; }
 
