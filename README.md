@@ -1,7 +1,7 @@
 # Social
 
 ### It's the light core of social network. Here you can create account and change settings, find other users, add them as friends and send or receive messages
-
+### You can try it at https://drevish-social.herokuapp.com/
 
 <h2> How to run</h2>
 
