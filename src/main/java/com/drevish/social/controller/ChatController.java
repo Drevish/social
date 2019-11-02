@@ -2,6 +2,7 @@ package com.drevish.social.controller;
 
 import com.drevish.social.exception.ChatNotFoundException;
 import com.drevish.social.model.entity.Chat;
+import com.drevish.social.model.entity.Message;
 import com.drevish.social.model.entity.User;
 import com.drevish.social.model.entity.UserInfo;
 import com.drevish.social.service.ChatService;
@@ -14,10 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Controller
@@ -63,6 +61,7 @@ public class ChatController extends ControllerWithUserInfo {
     public String showChat(@PathVariable Long id, Principal principal, Model model) {
         try {
             Chat chat = chatService.getById(id);
+            chat.getMessages().sort(Comparator.comparing(Message::getSendDate));
             model.addAttribute("chat", chat);
             User user = userService.getUserByEmail(principal.getName());
             model.addAttribute("user", user);
