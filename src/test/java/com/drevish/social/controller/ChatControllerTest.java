@@ -51,6 +51,7 @@ public class ChatControllerTest extends ControllerTestWithUserAndUserInfo {
         User anotherUser = new User(2L, "another@gmail.com", "password", new ArrayList<>());
         testChat = new Chat(Stream.of(testUser, anotherUser).collect(Collectors.toSet()));
         testChat.setId(1L);
+        testChat.setMessages(new ArrayList<>());
         testChats = Collections.singletonList(testChat);
 
         UserInfo anotherUserInfo = new UserInfo(2L, anotherUser, "another", "user",
